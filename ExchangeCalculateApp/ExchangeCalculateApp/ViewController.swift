@@ -4,11 +4,12 @@ import Alamofire
 
 // Cell Model
 struct ExchangeItem: Hashable {
-    let title: String
+    let currencyTitle: String
+    let countryTitle: String
     let rate: String
 }
 
-class ViewController: UIViewController {
+final class ViewController: UIViewController {
 
     // 메인 TableView
     private lazy var exchangeTableView: UITableView = {
@@ -16,6 +17,11 @@ class ViewController: UIViewController {
         tableView.register(ExchangeTableViewCell.self, forCellReuseIdentifier: ExchangeTableViewCell.identifier)
         tableView.delegate = self
         return tableView
+    }()
+    
+    private lazy var searchBar: UISearchBar = {
+        let searchBar = UISearchBar()
+        return searchBar
     }()
     
     // 메인 TableView에 뿌려질 데이터 (ViewModel 구현 전 임시)
@@ -59,7 +65,10 @@ class ViewController: UIViewController {
     // 네트워크 작업을 통해 받아온 데이터를 저장
     private func reloadData(rates: [String: Double]) {
         for (key, value) in rates {
-            items.append(ExchangeItem(title: key, rate: String(format: "%.4f", value)))
+            let country = CountryDictionary.dictionary[key] ?? "Unknown Country"
+            items.append(ExchangeItem(currencyTitle: key,
+                                      countryTitle: country,
+                                      rate: String(format: "%.4f", value)))
         }
         let snapShot = makeSnapshot()
         dataSource?.apply(snapShot, animatingDifferences: false)
@@ -88,12 +97,19 @@ class ViewController: UIViewController {
 
 private extension ViewController {
     private func addViews() {
-        view.addSubview(exchangeTableView)
+        [exchangeTableView, searchBar].forEach {
+            view.addSubview($0)
+        }
     }
     
     private func configureLayout() {
+        searchBar.snp.makeConstraints {
+            $0.top.equalTo(view.safeAreaLayoutGuide)
+            $0.leading.trailing.equalToSuperview()
+        }
         exchangeTableView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
+            $0.top.equalTo(searchBar.snp.bottom)
+            $0.leading.trailing.bottom.equalTo(view.safeAreaLayoutGuide)
         }
     }
 }
@@ -111,7 +127,7 @@ extension UIAlertController {
 // MARK: UITableViewDelegate
 extension ViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return tableView.estimatedRowHeight
+        return 60
     }
 }
 
@@ -141,7 +157,7 @@ enum ServerURL {
     static let string = "https://open.er-api.com/v6/latest/USD"
 }
 
-class NetworkManager {
+final class NetworkManager {
     func fetch<T: Codable>(type: T.Type, for url: String) async throws ->  T {
         guard let url = URL(string: url) else {
             throw(NetworkError.invalidURL)
