@@ -2,6 +2,7 @@ import UIKit
 import SnapKit
 import Alamofire
 
+// Cell Model
 struct ExchangeItem: Hashable {
     let title: String
     let rate: String
@@ -9,6 +10,7 @@ struct ExchangeItem: Hashable {
 
 class ViewController: UIViewController {
 
+    // 메인 TableView
     private lazy var exchangeTableView: UITableView = {
         let tableView = UITableView()
         tableView.register(ExchangeTableViewCell.self, forCellReuseIdentifier: ExchangeTableViewCell.identifier)
@@ -16,11 +18,8 @@ class ViewController: UIViewController {
         return tableView
     }()
     
+    // 메인 TableView에 뿌려질 데이터 (ViewModel 구현 전 임시)
     private var items: [ExchangeItem] = []
-    
-    enum Section: CaseIterable {
-        case main
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,6 +28,7 @@ class ViewController: UIViewController {
         addViews()
         configureLayout()
         
+        // 네트워크 작업
         let networkManager = NetworkManager()
         Task {
             do {
@@ -46,11 +46,17 @@ class ViewController: UIViewController {
         
     }
     
+// MARK: UItableViewDiffableDataSource
     typealias DataSource = UITableViewDiffableDataSource<Section, ExchangeItem>
     typealias Snapshot = NSDiffableDataSourceSnapshot<Section, ExchangeItem>
     
+    enum Section: CaseIterable {
+        case main
+    }
+    
     private var dataSource: DataSource?
     
+    // 네트워크 작업을 통해 받아온 데이터를 저장
     private func reloadData(rates: [String: Double]) {
         for (key, value) in rates {
             items.append(ExchangeItem(title: key, rate: String(format: "%.4f", value)))
@@ -93,7 +99,6 @@ private extension ViewController {
 }
 
 // MARK: UIAlertController Extension
-
 extension UIAlertController {
     static func initErrorAlert(title: String, message: String) -> UIAlertController {
         let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
@@ -112,7 +117,6 @@ extension ViewController: UITableViewDelegate {
 
 
 // MARK: NetworkManager
-
 struct Response: Codable {
     let result: String
     let base: String
@@ -134,7 +138,7 @@ enum NetworkError: Error {
 }
 
 enum ServerURL {
-    static let string = "3https://open.er-api.com/v6/latest/USD"
+    static let string = "https://open.er-api.com/v6/latest/USD"
 }
 
 class NetworkManager {
