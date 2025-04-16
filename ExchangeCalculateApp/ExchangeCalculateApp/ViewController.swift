@@ -4,7 +4,8 @@ import Alamofire
 
 // Cell Model
 struct ExchangeItem: Hashable {
-    let title: String
+    let currencyTitle: String
+    let countryTitle: String
     let rate: String
 }
 
@@ -64,7 +65,10 @@ final class ViewController: UIViewController {
     // 네트워크 작업을 통해 받아온 데이터를 저장
     private func reloadData(rates: [String: Double]) {
         for (key, value) in rates {
-            items.append(ExchangeItem(title: key, rate: String(format: "%.4f", value)))
+            let country = CountryDictionary.dictionary[key] ?? "Unknown Country"
+            items.append(ExchangeItem(currencyTitle: key,
+                                      countryTitle: country,
+                                      rate: String(format: "%.4f", value)))
         }
         let snapShot = makeSnapshot()
         dataSource?.apply(snapShot, animatingDifferences: false)
@@ -105,7 +109,7 @@ private extension ViewController {
         }
         exchangeTableView.snp.makeConstraints {
             $0.top.equalTo(searchBar.snp.bottom)
-            $0.leading.trailing.bottom.equalToSuperview()
+            $0.leading.trailing.bottom.equalTo(view.safeAreaLayoutGuide)
         }
     }
 }
@@ -123,7 +127,7 @@ extension UIAlertController {
 // MARK: UITableViewDelegate
 extension ViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 50
+        return 60
     }
 }
 
