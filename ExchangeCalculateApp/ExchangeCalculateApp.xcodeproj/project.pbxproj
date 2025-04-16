@@ -6,6 +6,13 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		AA4CCEF22DAF414B00C6AAAE /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = AA4CCEF12DAF414B00C6AAAE /* RxSwift */; };
+		AA4CCEF42DAF415000C6AAAE /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = AA4CCEF32DAF415000C6AAAE /* RxCocoa */; };
+		AA4CCEF62DAF415500C6AAAE /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = AA4CCEF52DAF415500C6AAAE /* Alamofire */; };
+		AA4CCEF82DAF415900C6AAAE /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = AA4CCEF72DAF415900C6AAAE /* SnapKit */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		AA4CCE902DAF3A0800C6AAAE /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -65,6 +72,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AA4CCEF62DAF415500C6AAAE /* Alamofire in Frameworks */,
+				AA4CCEF82DAF415900C6AAAE /* SnapKit in Frameworks */,
+				AA4CCEF42DAF415000C6AAAE /* RxCocoa in Frameworks */,
+				AA4CCEF22DAF414B00C6AAAE /* RxSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -91,6 +102,7 @@
 				AA4CCE782DAF3A0700C6AAAE /* ExchangeCalculateApp */,
 				AA4CCE922DAF3A0800C6AAAE /* ExchangeCalculateAppTests */,
 				AA4CCE9C2DAF3A0800C6AAAE /* ExchangeCalculateAppUITests */,
+				AA4CCEF02DAF414B00C6AAAE /* Frameworks */,
 				AA4CCE772DAF3A0700C6AAAE /* Products */,
 			);
 			sourceTree = "<group>";
@@ -103,6 +115,13 @@
 				AA4CCE992DAF3A0800C6AAAE /* ExchangeCalculateAppUITests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		AA4CCEF02DAF414B00C6AAAE /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -125,6 +144,10 @@
 			);
 			name = ExchangeCalculateApp;
 			packageProductDependencies = (
+				AA4CCEF12DAF414B00C6AAAE /* RxSwift */,
+				AA4CCEF32DAF415000C6AAAE /* RxCocoa */,
+				AA4CCEF52DAF415500C6AAAE /* Alamofire */,
+				AA4CCEF72DAF415900C6AAAE /* SnapKit */,
 			);
 			productName = ExchangeCalculateApp;
 			productReference = AA4CCE762DAF3A0700C6AAAE /* ExchangeCalculateApp.app */;
@@ -603,6 +626,29 @@
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		AA4CCEF12DAF414B00C6AAAE /* RxSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AA4CCEEB2DAF3BA700C6AAAE /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxSwift;
+		};
+		AA4CCEF32DAF415000C6AAAE /* RxCocoa */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AA4CCEEB2DAF3BA700C6AAAE /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxCocoa;
+		};
+		AA4CCEF52DAF415500C6AAAE /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AA4CCEED2DAF3C8700C6AAAE /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
+		};
+		AA4CCEF72DAF415900C6AAAE /* SnapKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AA4CCEEC2DAF3BB600C6AAAE /* XCRemoteSwiftPackageReference "SnapKit" */;
+			productName = SnapKit;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = AA4CCE6E2DAF3A0700C6AAAE /* Project object */;
 }
