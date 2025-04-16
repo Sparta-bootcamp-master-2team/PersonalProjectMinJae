@@ -22,10 +22,6 @@ class ViewController: UIViewController {
         case main
     }
     
-    typealias DataSource = UITableViewDiffableDataSource<Section, ExchangeItem>
-    typealias Snapshot = NSDiffableDataSourceSnapshot<Section, ExchangeItem>
-    
-    private var dataSource: DataSource?
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -37,16 +33,11 @@ class ViewController: UIViewController {
         Task {
             do {
                 let result = try await networkManager.fetch(type: Response.self, for: ServerURL.string)
-                print(result)
                 await MainActor.run {
                     reloadData(rates: result.rates)
                 }
             } catch(let error) {
-                print(error.localizedDescription)
-                let alert = UIAlertController(title: "오류", message: "데이터를 불러올 수 없습니다.", preferredStyle: .alert)
-                let action = UIAlertAction(title: "확인", style: .cancel)
-                alert.addAction(action)
-                
+                let alert: UIAlertController = .initErrorAlert(title: "오류", message: "데이터를 불러올 수 없습니다.")
                 await MainActor.run {
                     self.present(alert, animated: true)
                 }
@@ -55,16 +46,41 @@ class ViewController: UIViewController {
         
     }
     
+    typealias DataSource = UITableViewDiffableDataSource<Section, ExchangeItem>
+    typealias Snapshot = NSDiffableDataSourceSnapshot<Section, ExchangeItem>
+    
+    private var dataSource: DataSource?
+    
     private func reloadData(rates: [String: Double]) {
         for (key, value) in rates {
             items.append(ExchangeItem(title: key, rate: String(format: "%.4f", value)))
         }
-        var snapShot = Snapshot()
-        snapShot.appendSections([.main])
-        snapShot.appendItems(items)
+        let snapShot = makeSnapshot()
         dataSource?.apply(snapShot, animatingDifferences: false)
     }
     
+    private func makeSnapshot() -> Snapshot {
+        var snapShot = Snapshot()
+        snapShot.appendSections([.main])
+        snapShot.appendItems(items)
+        return snapShot
+    }
+    
+    private func configureTableView() {
+        dataSource = DataSource(tableView: self.exchangeTableView) { tableView, indexPath, item in
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: ExchangeTableViewCell.identifier, for: indexPath) as? ExchangeTableViewCell else { return UITableViewCell() }
+            cell.configure(model: item)
+            return cell
+        }
+        
+        let snapShot = makeSnapshot()
+        
+        dataSource?.apply(snapShot, animatingDifferences: false)
+    }
+    
+}
+
+private extension ViewController {
     private func addViews() {
         view.addSubview(exchangeTableView)
     }
@@ -74,19 +90,17 @@ class ViewController: UIViewController {
             $0.edges.equalToSuperview()
         }
     }
-    
-    private func configureTableView() {
-        dataSource = DataSource(tableView: self.exchangeTableView) { tableView, indexPath, item in
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: ExchangeTableViewCell.identifier, for: indexPath) as? ExchangeTableViewCell else { return UITableViewCell() }
-            cell.configure(model: item)
-            return cell
-        }
-        var snapShot = Snapshot()
-        snapShot.appendSections([.main])
-        snapShot.appendItems(items)
-        dataSource?.apply(snapShot, animatingDifferences: false)
+}
+
+// MARK: UIAlertController Extension
+
+extension UIAlertController {
+    static func initErrorAlert(title: String, message: String) -> UIAlertController {
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "확인", style: .default)
+        alertController.addAction(okAction)
+        return alertController
     }
-    
 }
 
 // MARK: UITableViewDelegate
@@ -120,7 +134,7 @@ enum NetworkError: Error {
 }
 
 enum ServerURL {
-    static let string = "https://open.er-api.com/v6/latest/USD"
+    static let string = "3https://open.er-api.com/v6/latest/USD"
 }
 
 class NetworkManager {
