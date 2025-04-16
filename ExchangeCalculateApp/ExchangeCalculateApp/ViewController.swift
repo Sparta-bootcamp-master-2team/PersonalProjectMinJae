@@ -24,11 +24,13 @@ final class ViewController: UIViewController {
     
     private let disposeBag = DisposeBag()
     
+    // 검색 창
     private lazy var searchBar: UISearchBar = {
         let searchBar = UISearchBar()
         return searchBar
     }()
     
+    // 검색 결과 없음 View
     private lazy var emptyView: UIView = {
         let view = UIView()
         view.backgroundColor = .systemGray6
@@ -44,6 +46,7 @@ final class ViewController: UIViewController {
         return view
     }()
     
+    // SearchBar 바인딩
     func bind() {
         searchBar
             .rx
@@ -54,6 +57,7 @@ final class ViewController: UIViewController {
             .disposed(by: disposeBag)
     }
     
+    // 검색창의 문자열로 필터링되도록 TableView 재구현
     private func filterItems(searchText: String) {
         filteredItems = items.filter { $0.currencyTitle.contains(searchText) || $0.countryTitle.contains(searchText) }
         
@@ -115,6 +119,7 @@ final class ViewController: UIViewController {
         dataSource?.apply(snapShot, animatingDifferences: false)
     }
     
+    // Snapshot 생성
     private func makeSnapshot() -> Snapshot {
         var snapShot = Snapshot()
         snapShot.appendSections([.main])
@@ -122,6 +127,7 @@ final class ViewController: UIViewController {
         return snapShot
     }
     
+    // 처음 TablewView 생성
     private func configureTableView() {
         dataSource = DataSource(tableView: self.exchangeTableView) { tableView, indexPath, item in
             guard let cell = tableView.dequeueReusableCell(withIdentifier: ExchangeTableViewCell.identifier, for: indexPath) as? ExchangeTableViewCell else { return UITableViewCell() }
@@ -136,6 +142,7 @@ final class ViewController: UIViewController {
     
 }
 
+// 검색결과 없을 시 검색 결과 없음 View 보이도록 구현
 extension UITableViewDiffableDataSource {
     func showEmptyView(tableView: UITableView) {
         if snapshot().itemIdentifiers.isEmpty {
