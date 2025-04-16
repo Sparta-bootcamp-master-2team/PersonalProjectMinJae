@@ -7,10 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		AA4CCEF22DAF414B00C6AAAE /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = AA4CCEF12DAF414B00C6AAAE /* RxSwift */; };
-		AA4CCEF42DAF415000C6AAAE /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = AA4CCEF32DAF415000C6AAAE /* RxCocoa */; };
-		AA4CCEF62DAF415500C6AAAE /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = AA4CCEF52DAF415500C6AAAE /* Alamofire */; };
-		AA4CCEF82DAF415900C6AAAE /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = AA4CCEF72DAF415900C6AAAE /* SnapKit */; };
+		AA4CCF132DAF782300C6AAAE /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = AA4CCF122DAF782300C6AAAE /* RxCocoa */; };
+		AA4CCF152DAF782500C6AAAE /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = AA4CCF142DAF782500C6AAAE /* RxSwift */; };
+		AA4CCF172DAF782A00C6AAAE /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = AA4CCF162DAF782A00C6AAAE /* SnapKit */; };
+		AA4CCF192DAF782E00C6AAAE /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = AA4CCF182DAF782E00C6AAAE /* Alamofire */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -72,10 +72,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AA4CCEF62DAF415500C6AAAE /* Alamofire in Frameworks */,
-				AA4CCEF82DAF415900C6AAAE /* SnapKit in Frameworks */,
-				AA4CCEF42DAF415000C6AAAE /* RxCocoa in Frameworks */,
-				AA4CCEF22DAF414B00C6AAAE /* RxSwift in Frameworks */,
+				AA4CCF172DAF782A00C6AAAE /* SnapKit in Frameworks */,
+				AA4CCF192DAF782E00C6AAAE /* Alamofire in Frameworks */,
+				AA4CCF152DAF782500C6AAAE /* RxSwift in Frameworks */,
+				AA4CCF132DAF782300C6AAAE /* RxCocoa in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -102,7 +102,7 @@
 				AA4CCE782DAF3A0700C6AAAE /* ExchangeCalculateApp */,
 				AA4CCE922DAF3A0800C6AAAE /* ExchangeCalculateAppTests */,
 				AA4CCE9C2DAF3A0800C6AAAE /* ExchangeCalculateAppUITests */,
-				AA4CCEF02DAF414B00C6AAAE /* Frameworks */,
+				AA4CCF112DAF782300C6AAAE /* Frameworks */,
 				AA4CCE772DAF3A0700C6AAAE /* Products */,
 			);
 			sourceTree = "<group>";
@@ -117,7 +117,7 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		AA4CCEF02DAF414B00C6AAAE /* Frameworks */ = {
+		AA4CCF112DAF782300C6AAAE /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 			);
@@ -144,10 +144,10 @@
 			);
 			name = ExchangeCalculateApp;
 			packageProductDependencies = (
-				AA4CCEF12DAF414B00C6AAAE /* RxSwift */,
-				AA4CCEF32DAF415000C6AAAE /* RxCocoa */,
-				AA4CCEF52DAF415500C6AAAE /* Alamofire */,
-				AA4CCEF72DAF415900C6AAAE /* SnapKit */,
+				AA4CCF122DAF782300C6AAAE /* RxCocoa */,
+				AA4CCF142DAF782500C6AAAE /* RxSwift */,
+				AA4CCF162DAF782A00C6AAAE /* SnapKit */,
+				AA4CCF182DAF782E00C6AAAE /* Alamofire */,
 			);
 			productName = ExchangeCalculateApp;
 			productReference = AA4CCE762DAF3A0700C6AAAE /* ExchangeCalculateApp.app */;
@@ -628,25 +628,25 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		AA4CCEF12DAF414B00C6AAAE /* RxSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = AA4CCEEB2DAF3BA700C6AAAE /* XCRemoteSwiftPackageReference "RxSwift" */;
-			productName = RxSwift;
-		};
-		AA4CCEF32DAF415000C6AAAE /* RxCocoa */ = {
+		AA4CCF122DAF782300C6AAAE /* RxCocoa */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = AA4CCEEB2DAF3BA700C6AAAE /* XCRemoteSwiftPackageReference "RxSwift" */;
 			productName = RxCocoa;
 		};
-		AA4CCEF52DAF415500C6AAAE /* Alamofire */ = {
+		AA4CCF142DAF782500C6AAAE /* RxSwift */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = AA4CCEED2DAF3C8700C6AAAE /* XCRemoteSwiftPackageReference "Alamofire" */;
-			productName = Alamofire;
+			package = AA4CCEEB2DAF3BA700C6AAAE /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxSwift;
 		};
-		AA4CCEF72DAF415900C6AAAE /* SnapKit */ = {
+		AA4CCF162DAF782A00C6AAAE /* SnapKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = AA4CCEEC2DAF3BB600C6AAAE /* XCRemoteSwiftPackageReference "SnapKit" */;
 			productName = SnapKit;
+		};
+		AA4CCF182DAF782E00C6AAAE /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AA4CCEED2DAF3C8700C6AAAE /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
