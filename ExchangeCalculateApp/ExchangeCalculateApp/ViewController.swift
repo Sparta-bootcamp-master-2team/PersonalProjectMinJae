@@ -58,6 +58,9 @@ class ViewController: UIViewController {
     
 }
 
+// MARK: UITableViewDelegate
 extension ViewController: UITableViewDelegate {
-    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return tableView.estimatedRowHeight
+    }
 }
