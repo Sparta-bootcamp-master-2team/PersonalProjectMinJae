@@ -1,6 +1,8 @@
 import UIKit
 import SnapKit
 import Alamofire
+import RxSwift
+import RxCocoa
 
 // Cell Model
 struct ExchangeItem: Hashable {
@@ -19,13 +21,32 @@ final class ViewController: UIViewController {
         return tableView
     }()
     
+    private let disposeBag = DisposeBag()
+    
     private lazy var searchBar: UISearchBar = {
         let searchBar = UISearchBar()
         return searchBar
     }()
     
+    func bind() {
+        searchBar
+            .rx
+            .text
+            .subscribe(onNext: { [weak self] text in
+                self?.filterItems(searchText: text ?? "")
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    private func filterItems(searchText: String) {
+        filteredItems = items.filter { $0.currencyTitle.contains(searchText) || $0.countryTitle.contains(searchText) }
+        
+        let snapShot = makeSnapshot()
+        dataSource?.apply(snapShot, animatingDifferences: false)
+    }
     // 메인 TableView에 뿌려질 데이터 (ViewModel 구현 전 임시)
     private var items: [ExchangeItem] = []
+    private var filteredItems: [ExchangeItem] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,14 +54,14 @@ final class ViewController: UIViewController {
         configureTableView()
         addViews()
         configureLayout()
-        
+        bind()
         // 네트워크 작업
         let networkManager = NetworkManager()
         Task {
             do {
                 let result = try await networkManager.fetch(type: Response.self, for: ServerURL.string)
                 await MainActor.run {
-                    reloadData(rates: result.rates)
+                    fetchData(rates: result.rates)
                 }
             } catch(let error) {
                 let alert: UIAlertController = .initErrorAlert(title: "오류", message: "데이터를 불러올 수 없습니다.")
@@ -63,13 +84,14 @@ final class ViewController: UIViewController {
     private var dataSource: DataSource?
     
     // 네트워크 작업을 통해 받아온 데이터를 저장
-    private func reloadData(rates: [String: Double]) {
+    private func fetchData(rates: [String: Double]) {
         for (key, value) in rates {
             let country = CountryDictionary.dictionary[key] ?? "Unknown Country"
             items.append(ExchangeItem(currencyTitle: key,
                                       countryTitle: country,
                                       rate: String(format: "%.4f", value)))
         }
+        filteredItems = items
         let snapShot = makeSnapshot()
         dataSource?.apply(snapShot, animatingDifferences: false)
     }
@@ -77,7 +99,7 @@ final class ViewController: UIViewController {
     private func makeSnapshot() -> Snapshot {
         var snapShot = Snapshot()
         snapShot.appendSections([.main])
-        snapShot.appendItems(items)
+        snapShot.appendItems(filteredItems)
         return snapShot
     }
     
