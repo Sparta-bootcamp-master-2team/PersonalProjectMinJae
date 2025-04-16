@@ -8,7 +8,7 @@ struct ExchangeItem: Hashable {
     let rate: String
 }
 
-class ViewController: UIViewController {
+final class ViewController: UIViewController {
 
     // 메인 TableView
     private lazy var exchangeTableView: UITableView = {
@@ -16,6 +16,11 @@ class ViewController: UIViewController {
         tableView.register(ExchangeTableViewCell.self, forCellReuseIdentifier: ExchangeTableViewCell.identifier)
         tableView.delegate = self
         return tableView
+    }()
+    
+    private lazy var searchBar: UISearchBar = {
+        let searchBar = UISearchBar()
+        return searchBar
     }()
     
     // 메인 TableView에 뿌려질 데이터 (ViewModel 구현 전 임시)
@@ -88,12 +93,19 @@ class ViewController: UIViewController {
 
 private extension ViewController {
     private func addViews() {
-        view.addSubview(exchangeTableView)
+        [exchangeTableView, searchBar].forEach {
+            view.addSubview($0)
+        }
     }
     
     private func configureLayout() {
+        searchBar.snp.makeConstraints {
+            $0.top.equalTo(view.safeAreaLayoutGuide)
+            $0.leading.trailing.equalToSuperview()
+        }
         exchangeTableView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
+            $0.top.equalTo(searchBar.snp.bottom)
+            $0.leading.trailing.bottom.equalToSuperview()
         }
     }
 }
@@ -111,7 +123,7 @@ extension UIAlertController {
 // MARK: UITableViewDelegate
 extension ViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return tableView.estimatedRowHeight
+        return 50
     }
 }
 
@@ -141,7 +153,7 @@ enum ServerURL {
     static let string = "https://open.er-api.com/v6/latest/USD"
 }
 
-class NetworkManager {
+final class NetworkManager {
     func fetch<T: Codable>(type: T.Type, for url: String) async throws ->  T {
         guard let url = URL(string: url) else {
             throw(NetworkError.invalidURL)
