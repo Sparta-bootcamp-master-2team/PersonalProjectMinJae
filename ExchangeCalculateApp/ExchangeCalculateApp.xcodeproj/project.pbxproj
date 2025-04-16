@@ -211,6 +211,7 @@
 			packageReferences = (
 				AA4CCEEB2DAF3BA700C6AAAE /* XCRemoteSwiftPackageReference "RxSwift" */,
 				AA4CCEEC2DAF3BB600C6AAAE /* XCRemoteSwiftPackageReference "SnapKit" */,
+				AA4CCEED2DAF3C8700C6AAAE /* XCRemoteSwiftPackageReference "Alamofire" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = AA4CCE772DAF3A0700C6AAAE /* Products */;
@@ -591,6 +592,14 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 5.7.1;
+			};
+		};
+		AA4CCEED2DAF3C8700C6AAAE /* XCRemoteSwiftPackageReference "Alamofire" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.10.2;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
