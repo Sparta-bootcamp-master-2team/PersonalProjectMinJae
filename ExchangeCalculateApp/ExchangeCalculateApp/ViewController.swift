@@ -18,6 +18,7 @@ final class ViewController: UIViewController {
         let tableView = UITableView()
         tableView.register(ExchangeTableViewCell.self, forCellReuseIdentifier: ExchangeTableViewCell.identifier)
         tableView.delegate = self
+        tableView.backgroundView = emptyView
         return tableView
     }()
     
@@ -26,6 +27,21 @@ final class ViewController: UIViewController {
     private lazy var searchBar: UISearchBar = {
         let searchBar = UISearchBar()
         return searchBar
+    }()
+    
+    private lazy var emptyView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .systemGray6
+        let label = UILabel()
+        label.text = "검색 결과 없음"
+        label.textAlignment = .center
+        label.textColor = .gray
+        view.addSubview(label)
+        label.snp.makeConstraints {
+            $0.edges.equalTo(view)
+            $0.center.equalTo(view)
+        }
+        return view
     }()
     
     func bind() {
@@ -41,8 +57,11 @@ final class ViewController: UIViewController {
     private func filterItems(searchText: String) {
         filteredItems = items.filter { $0.currencyTitle.contains(searchText) || $0.countryTitle.contains(searchText) }
         
+        searchText == "" ? filteredItems = items : nil
+        
         let snapShot = makeSnapshot()
         dataSource?.apply(snapShot, animatingDifferences: false)
+        dataSource?.showEmptyView(tableView: exchangeTableView)
     }
     // 메인 TableView에 뿌려질 데이터 (ViewModel 구현 전 임시)
     private var items: [ExchangeItem] = []
@@ -117,6 +136,16 @@ final class ViewController: UIViewController {
     
 }
 
+extension UITableViewDiffableDataSource {
+    func showEmptyView(tableView: UITableView) {
+        if snapshot().itemIdentifiers.isEmpty {
+            tableView.backgroundView?.isHidden = false
+        } else {
+            tableView.backgroundView?.isHidden = true
+        }
+    }
+}
+
 private extension ViewController {
     private func addViews() {
         [exchangeTableView, searchBar].forEach {
@@ -132,6 +161,10 @@ private extension ViewController {
         exchangeTableView.snp.makeConstraints {
             $0.top.equalTo(searchBar.snp.bottom)
             $0.leading.trailing.bottom.equalTo(view.safeAreaLayoutGuide)
+        }
+        emptyView.snp.makeConstraints {
+            $0.edges.equalTo(exchangeTableView)
+            $0.center.equalTo(exchangeTableView)
         }
     }
 }
@@ -198,3 +231,4 @@ final class NetworkManager {
         return data
     }
 }
+
