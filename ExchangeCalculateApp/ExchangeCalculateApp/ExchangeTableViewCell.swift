@@ -7,17 +7,34 @@ class ExchangeTableViewCell: UITableViewCell {
         return String(describing: ExchangeTableViewCell.self)
     }
     
-    private let titleLabel: UILabel = {
+    private lazy var labelStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.spacing = 4
+        stackView.addArrangedSubview(currencyLabel)
+        stackView.addArrangedSubview(countryLabel)
+        return stackView
+    }()
+    
+    private lazy var currencyLabel: UILabel = {
         let label = UILabel()
-        label.font = .boldSystemFont(ofSize: 17)
+        label.font = .systemFont(ofSize: 16, weight: .medium)
         label.textColor = .black
+        return label
+    }()
+    
+    private lazy var countryLabel: UILabel = {
+        let label = UILabel()
+        label.font = .systemFont(ofSize: 14)
+        label.textColor = .gray
         return label
     }()
     
     private let rateLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 17, weight: .medium)
-        label.textColor = .lightGray
+        label.font = .systemFont(ofSize: 16, weight: .medium)
+        label.textColor = .black
+        label.textAlignment = .right
         return label
     }()
     
@@ -32,24 +49,28 @@ class ExchangeTableViewCell: UITableViewCell {
     }
     
     private func addViews() {
-        [titleLabel, rateLabel].forEach {
+        [labelStackView, rateLabel].forEach {
             contentView.addSubview($0)
         }
     }
     
     private func configureLayout() {
-        titleLabel.snp.makeConstraints {
+        labelStackView.snp.makeConstraints {
             $0.centerY.equalToSuperview()
             $0.leading.equalToSuperview().inset(16)
         }
+        
         rateLabel.snp.makeConstraints {
-            $0.centerY.equalToSuperview()
             $0.trailing.equalToSuperview().inset(16)
+            $0.centerY.equalToSuperview()
+            $0.leading.greaterThanOrEqualTo(labelStackView.snp.trailing).offset(16)
+            $0.width.equalTo(120)
         }
     }
     
     func configure(model: ExchangeItem) {
-        self.titleLabel.text = model.title
+        self.currencyLabel.text = model.currencyTitle
+        self.countryLabel.text = model.countryTitle
         self.rateLabel.text = model.rate
     }
 
