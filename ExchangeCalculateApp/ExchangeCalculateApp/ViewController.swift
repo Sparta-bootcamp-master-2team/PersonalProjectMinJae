@@ -43,6 +43,13 @@ class ViewController: UIViewController {
                 }
             } catch(let error) {
                 print(error.localizedDescription)
+                let alert = UIAlertController(title: "오류", message: "데이터를 불러올 수 없습니다.", preferredStyle: .alert)
+                let action = UIAlertAction(title: "확인", style: .cancel)
+                alert.addAction(action)
+                
+                await MainActor.run {
+                    self.present(alert, animated: true)
+                }
             }
         }
         
