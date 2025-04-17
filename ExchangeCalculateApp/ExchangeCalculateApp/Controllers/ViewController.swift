@@ -1,13 +1,11 @@
 import UIKit
 import SnapKit
+import RxSwift
 
 final class ViewController: UIViewController {
 
     private let exchangeView = ExchangeView()
-    override func loadView() {
-        super.loadView()
-        self.view = exchangeView
-    }
+    private var disposeBag = DisposeBag()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -15,6 +13,7 @@ final class ViewController: UIViewController {
         addViews()
         configureLayout()
         configureNavigtaioinBar()
+        bind()
         // 네트워크 작업
         let networkManager = NetworkManager()
         Task {
@@ -31,6 +30,16 @@ final class ViewController: UIViewController {
             }
         }
     }
+    
+    func bind() {
+        exchangeView
+            .cellTouchedEvents
+            .subscribe(onNext: { [weak self] event in
+                print(event)
+            })
+            .disposed(by: disposeBag)
+    }
+    
 }
 // MARK: Add SubView, Configure UI,Layout
 private extension ViewController {
