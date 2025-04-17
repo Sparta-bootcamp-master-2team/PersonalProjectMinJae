@@ -48,17 +48,13 @@ class ExchangeView: UIView {
     
     // SearchBar 바인딩
     private func bind() {
-        searchBar
-            .rx
-            .text
+        searchBar.rx.text
             .subscribe(onNext: { [weak self] text in
                 self?.filterItems(searchText: text ?? "")
             })
             .disposed(by: disposeBag)
         
-        exchangeTableView
-            .rx
-            .itemSelected
+        exchangeTableView.rx.itemSelected
             .map{ [unowned self] in
                 self.filteredItems[$0.row]
             }
