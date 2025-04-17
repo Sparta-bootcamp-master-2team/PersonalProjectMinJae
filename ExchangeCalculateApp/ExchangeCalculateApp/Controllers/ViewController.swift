@@ -12,6 +12,9 @@ final class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
+        addViews()
+        configureLayout()
+        configureNavigtaioinBar()
         // 네트워크 작업
         let networkManager = NetworkManager()
         Task {
@@ -27,5 +30,28 @@ final class ViewController: UIViewController {
                 }
             }
         }
+    }
+}
+// MARK: Add SubView, Configure UI,Layout
+private extension ViewController {
+    func addViews() {
+        view.addSubview(exchangeView)
+    }
+    
+    func configureLayout() {
+        exchangeView.snp.makeConstraints {
+            $0.top.bottom.equalTo(view.safeAreaLayoutGuide)
+            $0.leading.trailing.equalToSuperview()
+        }
+    }
+    
+    func configureNavigtaioinBar() {
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationItem.title = "환율 정보"
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithTransparentBackground()
+        appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.label]
+        navigationController?.navigationBar.standardAppearance = appearance
+        navigationController?.navigationBar.scrollEdgeAppearance = appearance
     }
 }
