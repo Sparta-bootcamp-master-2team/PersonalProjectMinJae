@@ -10,6 +10,7 @@ class ExchangeView: UIView {
     // 메인 TableView에 뿌려질 데이터 (ViewModel 구현 전 임시)
     private var items: [ExchangeItem] = []
     private var filteredItems: [ExchangeItem] = []
+    // VC로 이벤트 전달하기 위한 Subject
     private(set) var cellTouchedEvents: PublishSubject<ExchangeItem> = .init()
     private let disposeBag = DisposeBag()
     
@@ -48,12 +49,14 @@ class ExchangeView: UIView {
     
     // SearchBar 바인딩
     private func bind() {
+        // SearchBar의 텍스트 변경마다 이벤트 방출
         searchBar.rx.text
             .subscribe(onNext: { [weak self] text in
                 self?.filterItems(searchText: text ?? "")
             })
             .disposed(by: disposeBag)
         
+        // Cell 선택시 이벤트 방출
         exchangeTableView.rx.itemSelected
             .map{ [unowned self] in
                 self.filteredItems[$0.row]

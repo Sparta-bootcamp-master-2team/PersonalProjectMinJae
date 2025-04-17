@@ -5,6 +5,7 @@ import RxSwift
 final class CalculatorView: UIView {
     
     private let disposeBag = DisposeBag()
+    // CalculatorVC에 이벤트 방출하기 위한 Subject
     private(set) var convertButtonTapEvents = PublishSubject<String?>()
     
     private let labelStackView: UIStackView = {
@@ -102,12 +103,13 @@ final class CalculatorView: UIView {
         currencyLabel.text = model.currencyTitle
         countryLabel.text = model.countryTitle
         
+        // ConvertButton 클릭 시 TextField.text 이벤트 방출 관찰자
         convertButton.rx.tap
             .withLatestFrom(amountTextField.rx.text)
             .bind(to: convertButtonTapEvents)
             .disposed(by: disposeBag)
     }
-    
+    // 결과 레이블 텍스트 변경
     func fetchedRate(result: String) {
         self.resultLabel.text = result
     }
