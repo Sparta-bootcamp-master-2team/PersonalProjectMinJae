@@ -17,7 +17,7 @@ final class CalculatorViewController: UIViewController {
         configureNavigtaioinBar()
         bind()
     }
-    
+    // 생성 시 ExchangeItem 인자로 받도록 구현
     convenience init(itme: ExchangeItem) {
         self.init(nibName: nil, bundle: nil)
         self.item = itme
@@ -31,6 +31,7 @@ final class CalculatorViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // 데이터 및 RxCocoa 바인딩
     private func bind() {
         guard let item else { return }
         calculatorView.bind(model: item)
@@ -43,6 +44,7 @@ final class CalculatorViewController: UIViewController {
             .disposed(by: disposeBag)
     }
     
+    // 입력값 검증
     private func isValidInput(input: String?) -> Bool {
         guard let text = input,
               text != "",
@@ -52,6 +54,7 @@ final class CalculatorViewController: UIViewController {
         return true
     }
     
+    // 환율 계산
     private func calculateExchangeRate(input: String?) {
         if !isValidInput(input: input) {
             let alert: UIAlertController = .initErrorAlert(title: "오류", message: "금액을 입력해주세요")

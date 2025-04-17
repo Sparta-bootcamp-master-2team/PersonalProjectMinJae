@@ -32,6 +32,7 @@ final class ViewController: UIViewController {
     }
     
     private func bind() {
+        // exchangeView의 subject 이벤트 수신
         exchangeView
             .cellTouchedEvents
             .subscribe(onNext: { [weak self] item in
@@ -53,7 +54,7 @@ private extension ViewController {
             $0.leading.trailing.equalToSuperview()
         }
     }
-    
+    // Configure NavigationBar
     func configureNavigtaioinBar() {
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.title = "환율 정보"
