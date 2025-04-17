@@ -1,6 +1,26 @@
 import Foundation
 
-enum CountryDictionary {
+// Network Response
+struct Response: Codable {
+    let result: String
+    let base: String
+    let rates: [String: Double]
+    
+    enum CodingKeys: String, CodingKey {
+        case result
+        case base = "base_code"
+        case rates
+    }
+}
+
+// Cell Model
+struct ExchangeItem: Hashable {
+    let currencyTitle: String
+    let rate: String
+    var countryTitle: String {
+        return Self.dictionary[currencyTitle] ?? "Unknown"
+    }
+    
     static let dictionary: [String: String] = [
         "USD": "미국",
         "AED": "아랍에미리트",
