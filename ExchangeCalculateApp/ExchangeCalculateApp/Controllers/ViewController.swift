@@ -31,11 +31,11 @@ final class ViewController: UIViewController {
         }
     }
     
-    func bind() {
+    private func bind() {
         exchangeView
             .cellTouchedEvents
-            .subscribe(onNext: { [weak self] event in
-                print(event)
+            .subscribe(onNext: { [weak self] item in
+                self?.navigationController?.pushViewController(CalculatorViewController(itme: item), animated: true)
             })
             .disposed(by: disposeBag)
     }
