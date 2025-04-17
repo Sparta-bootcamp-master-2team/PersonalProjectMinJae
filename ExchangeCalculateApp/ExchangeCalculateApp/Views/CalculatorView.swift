@@ -1,6 +1,11 @@
 import UIKit
+import RxCocoa
+import RxSwift
 
 final class CalculatorView: UIView {
+    
+    private let disposeBag = DisposeBag()
+    private(set) var convertButtonTapEvents = PublishSubject<String?>()
     
     private let labelStackView: UIStackView = {
         let stackView = UIStackView()
@@ -96,7 +101,17 @@ final class CalculatorView: UIView {
     func bind(model: ExchangeItem) {
         currencyLabel.text = model.currencyTitle
         countryLabel.text = model.countryTitle
+        
+        convertButton.rx.tap
+            .withLatestFrom(amountTextField.rx.text)
+            .bind(to: convertButtonTapEvents)
+            .disposed(by: disposeBag)
     }
+    
+    func fetchedRate(result: String) {
+        self.resultLabel.text = result
+    }
+    
 }
 
 

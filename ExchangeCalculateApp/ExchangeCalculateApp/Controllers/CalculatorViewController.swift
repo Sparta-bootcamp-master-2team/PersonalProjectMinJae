@@ -1,9 +1,13 @@
 import UIKit
+import RxSwift
+import RxCocoa
+import SnapKit
 
 final class CalculatorViewController: UIViewController {
 
     private var item: ExchangeItem?
     private let calculatorView = CalculatorView()
+    private let disposeBag = DisposeBag()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,6 +34,38 @@ final class CalculatorViewController: UIViewController {
     private func bind() {
         guard let item else { return }
         calculatorView.bind(model: item)
+        
+        calculatorView
+            .convertButtonTapEvents
+            .subscribe{[weak self] input in
+                self?.calculateExchangeRate(input: input)
+            }
+            .disposed(by: disposeBag)
+    }
+    
+    private func isValidInput(input: String?) -> Bool {
+        guard let text = input,
+              text != "",
+              Int(text) != nil else {
+            return false
+        }
+        return true
+    }
+    
+    private func calculateExchangeRate(input: String?) {
+        if !isValidInput(input: input) {
+            let alert: UIAlertController = .initErrorAlert(title: "오류", message: "금액을 입력해주세요")
+            self.present(alert, animated: false)
+        } else {
+            guard let input = Double(input ?? ""),
+                  let rate = Double(item?.rate ?? "") else { return }
+            let digit: Double = pow(10, 2)
+            let result = String(format: "%.2f", round(input * rate * digit) / digit)
+            let inputString = String(format: "%.2f", input)
+            let string = "$\(inputString) -> \(result) \(item?.currencyTitle ?? "")"
+            
+            calculatorView.fetchedRate(result: string)
+        }
     }
     
 }
