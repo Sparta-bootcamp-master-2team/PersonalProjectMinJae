@@ -1,15 +1,7 @@
 import UIKit
 import SnapKit
-import Alamofire
 import RxSwift
 import RxCocoa
-
-// Cell Model
-struct ExchangeItem: Hashable {
-    let currencyTitle: String
-    let countryTitle: String
-    let rate: String
-}
 
 final class ViewController: UIViewController {
 
@@ -142,17 +134,6 @@ final class ViewController: UIViewController {
     
 }
 
-// 검색결과 없을 시 검색 결과 없음 View 보이도록 구현
-extension UITableViewDiffableDataSource {
-    func showEmptyView(tableView: UITableView) {
-        if snapshot().itemIdentifiers.isEmpty {
-            tableView.backgroundView?.isHidden = false
-        } else {
-            tableView.backgroundView?.isHidden = true
-        }
-    }
-}
-
 private extension ViewController {
     private func addViews() {
         [exchangeTableView, searchBar].forEach {
@@ -173,16 +154,6 @@ private extension ViewController {
             $0.edges.equalTo(exchangeTableView)
             $0.center.equalTo(exchangeTableView)
         }
-    }
-}
-
-// MARK: UIAlertController Extension
-extension UIAlertController {
-    static func initErrorAlert(title: String, message: String) -> UIAlertController {
-        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        let okAction = UIAlertAction(title: "확인", style: .default)
-        alertController.addAction(okAction)
-        return alertController
     }
 }
 

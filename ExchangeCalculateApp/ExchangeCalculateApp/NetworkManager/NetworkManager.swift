@@ -2,17 +2,6 @@ import Foundation
 import Alamofire
 
 // MARK: NetworkManager
-struct Response: Codable {
-    let result: String
-    let base: String
-    let rates: [String: Double]
-    
-    enum CodingKeys: String, CodingKey {
-        case result
-        case base = "base_code"
-        case rates
-    }
-}
 
 enum NetworkError: Error {
     case invalidURL
