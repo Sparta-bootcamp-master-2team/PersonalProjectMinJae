@@ -55,33 +55,33 @@ class ExchangeView: UIView {
             })
             .disposed(by: disposeBag)
     }
+    // 데이터 저장
     func fetchData(rates: [String: Double]) {
         for (key, value) in rates {
             items.append(ExchangeItem(currencyTitle: key, rate: String(format: "%.4f", value)))
         }
         filterItems(searchText: "")
     }
-    
+    // 데이터 필터링 후 적용
     private func filterItems(searchText: String) {
         filteredItems = items.filter { $0.currencyTitle.uppercased().contains(searchText) || $0.countryTitle.uppercased().contains(searchText) }
         
         searchText == "" ? filteredItems = items : nil
         
-        let snapShot = makeSnapshot()
-        dataSource?.apply(snapShot, animatingDifferences: false)
-        dataSource?.showEmptyView(tableView: exchangeTableView)
+        makeSnapshotApply()
     }
     
     // Snapshot 생성
-    private func makeSnapshot() -> Snapshot {
+    private func makeSnapshotApply() {
         var snapShot = Snapshot()
         snapShot.appendSections([.main])
         snapShot.appendItems(filteredItems)
         
-        return snapShot
+        dataSource?.apply(snapShot, animatingDifferences: false)
+        dataSource?.showEmptyView(tableView: exchangeTableView)
     }
     
-    // 처음 TablewView 생성
+    // TablewView 구성
     private func configureTableView() {
         dataSource = DataSource(tableView: self.exchangeTableView) { tableView, indexPath, item in
             guard let cell = tableView.dequeueReusableCell(withIdentifier: ExchangeTableViewCell.identifier, for: indexPath) as? ExchangeTableViewCell else { return UITableViewCell() }
