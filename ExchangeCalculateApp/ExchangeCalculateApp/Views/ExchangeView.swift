@@ -10,7 +10,7 @@ class ExchangeView: UIView {
     // 메인 TableView에 뿌려질 데이터 (ViewModel 구현 전 임시)
     private var items: [ExchangeItem] = []
     private var filteredItems: [ExchangeItem] = []
-    
+    private(set) var cellTouchedEvents: PublishSubject<ExchangeItem> = .init()
     private let disposeBag = DisposeBag()
     
     // 메인 TableView
@@ -19,15 +19,16 @@ class ExchangeView: UIView {
         tableView.register(ExchangeTableViewCell.self, forCellReuseIdentifier: ExchangeTableViewCell.identifier)
         tableView.delegate = self
         tableView.backgroundView = emptyView
+        tableView.separatorStyle = .none
         return tableView
     }()
     
     private lazy var searchBar = UISearchBar()
-    // MARK: UItableViewDiffableDataSource
+    // MARK: UITableViewDiffableDataSource
     typealias DataSource = UITableViewDiffableDataSource<Section, ExchangeItem>
     typealias Snapshot = NSDiffableDataSourceSnapshot<Section, ExchangeItem>
     
-    enum Section: CaseIterable {
+    enum Section {
         case main
     }
     
@@ -53,6 +54,15 @@ class ExchangeView: UIView {
             .subscribe(onNext: { [weak self] text in
                 self?.filterItems(searchText: text ?? "")
             })
+            .disposed(by: disposeBag)
+        
+        exchangeTableView
+            .rx
+            .itemSelected
+            .map{ [unowned self] in
+                self.filteredItems[$0.row]
+            }
+            .bind(to: cellTouchedEvents)
             .disposed(by: disposeBag)
     }
     // 데이터 저장

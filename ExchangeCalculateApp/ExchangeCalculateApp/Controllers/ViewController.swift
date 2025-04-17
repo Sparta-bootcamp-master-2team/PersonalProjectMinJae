@@ -1,17 +1,19 @@
 import UIKit
 import SnapKit
+import RxSwift
 
 final class ViewController: UIViewController {
 
     private let exchangeView = ExchangeView()
-    override func loadView() {
-        super.loadView()
-        self.view = exchangeView
-    }
+    private var disposeBag = DisposeBag()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
+        addViews()
+        configureLayout()
+        configureNavigtaioinBar()
+        bind()
         // 네트워크 작업
         let networkManager = NetworkManager()
         Task {
@@ -27,5 +29,38 @@ final class ViewController: UIViewController {
                 }
             }
         }
+    }
+    
+    private func bind() {
+        exchangeView
+            .cellTouchedEvents
+            .subscribe(onNext: { [weak self] item in
+                self?.navigationController?.pushViewController(CalculatorViewController(itme: item), animated: true)
+            })
+            .disposed(by: disposeBag)
+    }
+    
+}
+// MARK: Add SubView, Configure UI,Layout
+private extension ViewController {
+    func addViews() {
+        view.addSubview(exchangeView)
+    }
+    
+    func configureLayout() {
+        exchangeView.snp.makeConstraints {
+            $0.top.bottom.equalTo(view.safeAreaLayoutGuide)
+            $0.leading.trailing.equalToSuperview()
+        }
+    }
+    
+    func configureNavigtaioinBar() {
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationItem.title = "환율 정보"
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithTransparentBackground()
+        appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.label]
+        navigationController?.navigationBar.standardAppearance = appearance
+        navigationController?.navigationBar.scrollEdgeAppearance = appearance
     }
 }
