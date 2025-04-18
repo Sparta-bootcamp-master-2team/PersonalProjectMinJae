@@ -8,20 +8,23 @@ enum ConvertResult {
 
 class CalculatorViewModel: ViewModelProtocol {
     
+    typealias State = PublishSubject<(ConvertResult, String?)>
+    
+    var state: RxSwift.PublishSubject<(ConvertResult, String?)>
     var item: ExchangeItem
     // 변환 결과와 문자열 이벤트 방출 (VC에서 수신)
-    var convertResult: PublishSubject<(ConvertResult, String?)> = .init()
     
     init(item: ExchangeItem) {
         self.item = item
+        self.state = .init()
     }
     
     // 입력값 검증 후 이벤트 방출
     func calculateExchangeRate(input: String?) {
         if !isValidInput(input: input) {
-            convertResult.onNext((.failure, nil))
+            state.onNext((.failure, nil))
         } else {
-            convertResult.onNext((.success, calculate(input: input)))
+            state.onNext((.success, calculate(input: input)))
         }
     }
     // 환율 계산 후 결과 문자열 리턴

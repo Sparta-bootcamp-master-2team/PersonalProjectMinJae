@@ -41,7 +41,7 @@ final class CalculatorViewController: UIViewController {
             .disposed(by: disposeBag)
         
         // 환율 계산 결과 바인딩
-        viewModel.convertResult
+        viewModel.state
             .observe(on: MainScheduler.instance)
             .subscribe { [weak self] result in
                 guard let self else { return }

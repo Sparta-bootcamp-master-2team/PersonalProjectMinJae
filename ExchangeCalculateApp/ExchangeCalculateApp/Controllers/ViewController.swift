@@ -39,8 +39,8 @@ final class ViewController: UIViewController {
             }
             .disposed(by: disposeBag)
         
-        // 네트워크 작업 결과 이벤트 수신
-        viewModel.dataLoadState
+        // 네트워크 작업 결과s이벤트 수신
+        viewModel.state
             .observe(on: MainScheduler.instance)
             .subscribe {[weak self] state in
                 guard let self else { return }
