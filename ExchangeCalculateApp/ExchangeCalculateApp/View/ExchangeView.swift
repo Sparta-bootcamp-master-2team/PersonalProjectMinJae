@@ -25,6 +25,7 @@ class ExchangeView: UIView {
     }()
     
     private lazy var searchBar = UISearchBar()
+    
     // MARK: UITableViewDiffableDataSource
     typealias DataSource = UITableViewDiffableDataSource<Section, ExchangeItem>
     typealias Snapshot = NSDiffableDataSourceSnapshot<Section, ExchangeItem>

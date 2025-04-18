@@ -55,8 +55,8 @@ final class ViewController: UIViewController {
             }
             .disposed(by: disposeBag)
     }
-    
 }
+
 // MARK: Add SubView, Configure UI,Layout
 private extension ViewController {
     func addViews() {
