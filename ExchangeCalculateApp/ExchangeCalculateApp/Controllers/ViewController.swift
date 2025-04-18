@@ -5,7 +5,8 @@ import RxSwift
 final class ViewController: UIViewController {
 
     private let exchangeView = ExchangeView()
-    private var disposeBag = DisposeBag()
+    private let disposeBag = DisposeBag()
+    private let viewModel = ViewModel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -14,21 +15,7 @@ final class ViewController: UIViewController {
         configureLayout()
         configureNavigtaioinBar()
         bind()
-        // 네트워크 작업
-        let networkManager = NetworkManager()
-        Task {
-            do {
-                let result = try await networkManager.fetch(type: Response.self, for: ServerURL.string)
-                await MainActor.run {
-                    exchangeView.fetchData(rates: result.rates)
-                }
-            } catch {
-                let alert: UIAlertController = .initErrorAlert(title: "오류", message: "데이터를 불러올 수 없습니다.")
-                await MainActor.run {
-                    self.present(alert, animated: true)
-                }
-            }
-        }
+        viewModel.fetchData()
     }
     
     private func bind() {
@@ -38,6 +25,21 @@ final class ViewController: UIViewController {
             .subscribe(onNext: { [weak self] item in
                 self?.navigationController?.pushViewController(CalculatorViewController(itme: item), animated: true)
             })
+            .disposed(by: disposeBag)
+        
+        viewModel.dataLoadState
+            .observe(on: MainScheduler.instance)
+            .subscribe {[weak self] state in
+                guard let self else { return }
+                let items = self.viewModel.exchageItemDTO.items
+                switch state {
+                case .success:
+                    self.exchangeView.fetchData(rates: items)
+                case .failure:
+                    let alert: UIAlertController = .initErrorAlert(title: "오류", message: "데이터를 불러올 수 없습니다.")
+                    self.present(alert, animated: false)
+                }
+            }
             .disposed(by: disposeBag)
     }
     

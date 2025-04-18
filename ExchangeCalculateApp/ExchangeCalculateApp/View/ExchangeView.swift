@@ -65,27 +65,23 @@ class ExchangeView: UIView {
             .disposed(by: disposeBag)
     }
     // 데이터 저장
-    func fetchData(rates: [String: Double]) {
-        for (key, value) in rates {
-            items.append(ExchangeItem(currencyTitle: key, rate: String(format: "%.4f", value)))
-        }
-        filterItems(searchText: "")
+    func fetchData(rates: [ExchangeItem]) {
+        makeSnapshotApply(rates: rates)
     }
+    
     // 데이터 필터링 후 적용
     private func filterItems(searchText: String) {
         let text = searchText.uppercased()
         filteredItems = items.filter { $0.currencyTitle.contains(text) || $0.countryTitle.uppercased().contains(text) }
         
         searchText == "" ? filteredItems = items : nil
-        
-        makeSnapshotApply()
     }
     
     // Snapshot 생성
-    private func makeSnapshotApply() {
+    private func makeSnapshotApply(rates: [ExchangeItem]) {
         var snapShot = Snapshot()
         snapShot.appendSections([.main])
-        snapShot.appendItems(filteredItems)
+        snapShot.appendItems(rates)
         
         dataSource?.apply(snapShot, animatingDifferences: false)
         dataSource?.showEmptyView(tableView: exchangeTableView)
