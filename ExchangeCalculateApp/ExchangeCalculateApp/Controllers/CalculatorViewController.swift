@@ -18,9 +18,9 @@ final class CalculatorViewController: UIViewController {
         bind()
     }
     // 생성 시 ExchangeItem 인자로 받도록 구현
-    convenience init(itme: ExchangeItem) {
+    convenience init(item: ExchangeItem) {
         self.init(nibName: nil, bundle: nil)
-        self.item = itme
+        self.item = item
     }
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {

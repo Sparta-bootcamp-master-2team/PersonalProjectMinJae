@@ -19,14 +19,27 @@ final class ViewController: UIViewController {
     }
     
     private func bind() {
-        // exchangeView의 subject 이벤트 수신
-        exchangeView
-            .cellTouchedEvents
-            .subscribe(onNext: { [weak self] item in
-                self?.navigationController?.pushViewController(CalculatorViewController(itme: item), animated: true)
+        // exchangeView의 셀 선택 이벤트 수신 (ViewModel에게 데이터 요청 후 적용)
+        exchangeView.cellTouchedEvents
+            .subscribe(onNext: { [weak self] indexPath in
+                guard let self else { return }
+                self.navigationController?.pushViewController(CalculatorViewController(item: viewModel.exchageItemDTO.items[indexPath.row]), animated: true)
             })
             .disposed(by: disposeBag)
         
+        // exchangeView의 텍스트변경 이벤트 수신 (ViewModel에게 데이터 요청 후 적용)
+        exchangeView.filteredTextEvents
+            .subscribe { [weak self] text in
+                guard let self,
+                      let text = text
+                else { return }
+                
+                let filteredItems = viewModel.exchageItemDTO.filterItems(searchText: text)
+                self.exchangeView.fetchData(rates: filteredItems)
+            }
+            .disposed(by: disposeBag)
+        
+        // 네트워크 작업 결과 이벤트 수신
         viewModel.dataLoadState
             .observe(on: MainScheduler.instance)
             .subscribe {[weak self] state in
