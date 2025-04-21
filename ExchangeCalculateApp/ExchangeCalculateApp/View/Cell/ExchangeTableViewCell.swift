@@ -1,11 +1,16 @@
 import UIKit
 import SnapKit
+import RxCocoa
+import RxSwift
 
 class ExchangeTableViewCell: UITableViewCell {
 
     static var identifier: String {
         return String(describing: ExchangeTableViewCell.self)
     }
+    // ExchangeView로 전달하기 위한 객체
+    private(set) var favoriteButtonEvents: PublishSubject<String?> = .init()
+    private let disposeBag = DisposeBag()
     
     private lazy var labelStackView: UIStackView = {
         let stackView = UIStackView()
@@ -41,6 +46,7 @@ class ExchangeTableViewCell: UITableViewCell {
     private let favoriteButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(systemName: "star"), for: .normal)
+        button.tintColor = .systemYellow
         return button
     }()
     
@@ -58,6 +64,15 @@ class ExchangeTableViewCell: UITableViewCell {
         self.currencyLabel.text = model.currencyTitle
         self.countryLabel.text = model.countryTitle
         self.rateLabel.text = model.rate
+    }
+    // 바인딩
+    func bind() {
+        favoriteButton.rx.tap
+            .withUnretained(self)
+            .map { $0.0.currencyLabel.text }
+            .bind(to: favoriteButtonEvents)
+            .disposed(by: disposeBag)
+        
     }
 
 }

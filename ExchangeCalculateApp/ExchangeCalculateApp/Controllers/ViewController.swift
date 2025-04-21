@@ -39,6 +39,13 @@ final class ViewController: UIViewController {
             }
             .disposed(by: disposeBag)
         
+        // Cell Favorite Button Event -> ExchangeView -> VC 수신받기
+        exchangeView.cellFavoriteButtonEvents
+            .subscribe(onNext: { currency in
+                print(currency)
+            })
+            .disposed(by: disposeBag)
+        
         // 네트워크 작업 결과s이벤트 수신
         viewModel.state
             .observe(on: MainScheduler.instance)
