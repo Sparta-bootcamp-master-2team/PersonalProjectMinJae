@@ -1,7 +1,11 @@
 import Foundation
+import CoreData
+import UIKit
 
 struct ExchangeItemDTO {
     var items: [ExchangeItem] = []
+    var favorites: [String] = []
+    
     // 데이터 저장
     mutating func fetchItems(response: Response) {
         for (key, value) in response.rates {
@@ -16,5 +20,37 @@ struct ExchangeItemDTO {
         var filteredItems = items.filter { $0.currencyTitle.contains(text) || $0.countryTitle.uppercased().contains(text) }
         if searchText == "" { filteredItems = self.items }
         return filteredItems
+    }
+    
+    mutating func fetchFavorite() {
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        let container = appDelegate.persistentContainer
+        do {
+            let favoriteString = try container.viewContext.fetch(FavoriteExchange.fetchRequest())
+            for item in favoriteString as [NSManagedObject] {
+                if let name = item.value(forKey: FavoriteExchange.Key.currency) as? String {
+                    self.favorites.append(name)
+                }
+            }
+        } catch {
+            print("Error fetching data: \(error)")
+        }
+        print(favorites)
+    }
+    
+    func saveFavorite(_ currency: String) {
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        let container = appDelegate.persistentContainer
+        
+        guard let entity = NSEntityDescription.entity(forEntityName: FavoriteExchange.entityName, in: container.viewContext) else { return }
+        let newFavorite = NSManagedObject(entity: entity, insertInto: container.viewContext)
+        newFavorite.setValue(currency, forKey: FavoriteExchange.Key.currency)
+        
+        do {
+            try container.viewContext.save()
+            print("저장 성공")
+        } catch {
+            print("저장 실패")
+        }
     }
 }

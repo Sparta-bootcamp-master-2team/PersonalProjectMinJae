@@ -11,6 +11,9 @@
 		AA4CCF152DAF782500C6AAAE /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = AA4CCF142DAF782500C6AAAE /* RxSwift */; };
 		AA4CCF172DAF782A00C6AAAE /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = AA4CCF162DAF782A00C6AAAE /* SnapKit */; };
 		AA4CCF192DAF782E00C6AAAE /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = AA4CCF182DAF782E00C6AAAE /* Alamofire */; };
+		AA7AE6732DB60D3B004B8A33 /* ExchangeCalculateApp.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = AA7AE6552DB60D3B004B8A33 /* ExchangeCalculateApp.xcdatamodeld */; };
+		AA7AE6992DB621A9004B8A33 /* FavoriteExchange+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA7AE6972DB621A9004B8A33 /* FavoriteExchange+CoreDataClass.swift */; };
+		AA7AE69A2DB621A9004B8A33 /* FavoriteExchange+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA7AE6982DB621A9004B8A33 /* FavoriteExchange+CoreDataProperties.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -34,6 +37,9 @@
 		AA4CCE762DAF3A0700C6AAAE /* ExchangeCalculateApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ExchangeCalculateApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA4CCE8F2DAF3A0800C6AAAE /* ExchangeCalculateAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ExchangeCalculateAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA4CCE992DAF3A0800C6AAAE /* ExchangeCalculateAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ExchangeCalculateAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA7AE6702DB60D3B004B8A33 /* ExchangeCalculateApp.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ExchangeCalculateApp.xcdatamodel; sourceTree = "<group>"; };
+		AA7AE6972DB621A9004B8A33 /* FavoriteExchange+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FavoriteExchange+CoreDataClass.swift"; sourceTree = "<group>"; };
+		AA7AE6982DB621A9004B8A33 /* FavoriteExchange+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FavoriteExchange+CoreDataProperties.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -99,6 +105,9 @@
 		AA4CCE6D2DAF3A0700C6AAAE = {
 			isa = PBXGroup;
 			children = (
+				AA7AE6552DB60D3B004B8A33 /* ExchangeCalculateApp.xcdatamodeld */,
+				AA7AE6972DB621A9004B8A33 /* FavoriteExchange+CoreDataClass.swift */,
+				AA7AE6982DB621A9004B8A33 /* FavoriteExchange+CoreDataProperties.swift */,
 				AA4CCE782DAF3A0700C6AAAE /* ExchangeCalculateApp */,
 				AA4CCE922DAF3A0800C6AAAE /* ExchangeCalculateAppTests */,
 				AA4CCE9C2DAF3A0800C6AAAE /* ExchangeCalculateAppUITests */,
@@ -277,6 +286,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AA7AE6732DB60D3B004B8A33 /* ExchangeCalculateApp.xcdatamodeld in Sources */,
+				AA7AE6992DB621A9004B8A33 /* FavoriteExchange+CoreDataClass.swift in Sources */,
+				AA7AE69A2DB621A9004B8A33 /* FavoriteExchange+CoreDataProperties.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -649,6 +661,19 @@
 			productName = Alamofire;
 		};
 /* End XCSwiftPackageProductDependency section */
+
+/* Begin XCVersionGroup section */
+		AA7AE6552DB60D3B004B8A33 /* ExchangeCalculateApp.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				AA7AE6702DB60D3B004B8A33 /* ExchangeCalculateApp.xcdatamodel */,
+			);
+			currentVersion = AA7AE6702DB60D3B004B8A33 /* ExchangeCalculateApp.xcdatamodel */;
+			path = ExchangeCalculateApp.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = AA4CCE6E2DAF3A0700C6AAAE /* Project object */;
 }
