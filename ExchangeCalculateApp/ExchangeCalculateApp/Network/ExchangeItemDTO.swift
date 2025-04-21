@@ -7,6 +7,8 @@ struct ExchangeItemDTO {
         for (key, value) in response.rates {
             items.append(ExchangeItem(currencyTitle: key, rate: String(format: "%.4f", value)))
         }
+        // 정렬
+        items.sort { $0.currencyTitle < $1.currencyTitle }
     }
     // 필터링된 데이터 리턴
     func filterItems(searchText: String) -> [ExchangeItem] {
