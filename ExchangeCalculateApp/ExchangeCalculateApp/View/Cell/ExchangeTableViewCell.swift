@@ -48,13 +48,22 @@ class ExchangeTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func addViews() {
+    func configure(model: ExchangeItem) {
+        self.currencyLabel.text = model.currencyTitle
+        self.countryLabel.text = model.countryTitle
+        self.rateLabel.text = model.rate
+    }
+
+}
+
+private extension ExchangeTableViewCell {
+    func addViews() {
         [labelStackView, rateLabel].forEach {
             contentView.addSubview($0)
         }
     }
     
-    private func configureLayout() {
+    func configureLayout() {
         labelStackView.snp.makeConstraints {
             $0.centerY.equalToSuperview()
             $0.leading.equalToSuperview().inset(16)
@@ -67,11 +76,4 @@ class ExchangeTableViewCell: UITableViewCell {
             $0.width.equalTo(120)
         }
     }
-    
-    func configure(model: ExchangeItem) {
-        self.currencyLabel.text = model.currencyTitle
-        self.countryLabel.text = model.countryTitle
-        self.rateLabel.text = model.rate
-    }
-
 }
