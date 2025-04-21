@@ -5,9 +5,10 @@ import SnapKit
 
 final class CalculatorViewController: UIViewController {
 
-    private var item: ExchangeItem?
+//    private var item: ExchangeItem?
     private let calculatorView = CalculatorView()
     private let disposeBag = DisposeBag()
+    private var viewModel: CalculatorViewModel
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -18,13 +19,9 @@ final class CalculatorViewController: UIViewController {
         bind()
     }
     // 생성 시 ExchangeItem 인자로 받도록 구현
-    convenience init(itme: ExchangeItem) {
-        self.init(nibName: nil, bundle: nil)
-        self.item = itme
-    }
-    
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+    init(item: ExchangeItem) {
+        self.viewModel = CalculatorViewModel(item: item)
+        super.init(nibName: nil, bundle: nil)
     }
     
     required init?(coder: NSCoder) {
@@ -33,42 +30,31 @@ final class CalculatorViewController: UIViewController {
     
     // 데이터 및 RxCocoa 바인딩
     private func bind() {
-        guard let item else { return }
-        calculatorView.bind(model: item)
+        calculatorView.bind(model: viewModel.item)
         
+        // Convert버튼 터치시 viewModel에서 환율 계산
         calculatorView
             .convertButtonTapEvents
             .subscribe{[weak self] input in
-                self?.calculateExchangeRate(input: input)
+                self?.viewModel.calculateExchangeRate(input: input)
             }
             .disposed(by: disposeBag)
-    }
-    
-    // 입력값 검증
-    private func isValidInput(input: String?) -> Bool {
-        guard let text = input,
-              text != "",
-              Int(text) != nil else {
-            return false
-        }
-        return true
-    }
-    
-    // 환율 계산
-    private func calculateExchangeRate(input: String?) {
-        if !isValidInput(input: input) {
-            let alert: UIAlertController = .initErrorAlert(title: "오류", message: "금액을 입력해주세요")
-            self.present(alert, animated: false)
-        } else {
-            guard let input = Double(input ?? ""),
-                  let rate = Double(item?.rate ?? "") else { return }
-            let digit: Double = pow(10, 2)
-            let result = String(format: "%.2f", round(input * rate * digit) / digit)
-            let inputString = String(format: "%.2f", input)
-            let string = "$\(inputString) -> \(result) \(item?.currencyTitle ?? "")"
-            
-            calculatorView.fetchedRate(result: string)
-        }
+        
+        // 환율 계산 결과 바인딩
+        viewModel.state
+            .observe(on: MainScheduler.instance)
+            .subscribe { [weak self] result in
+                guard let self else { return }
+                switch result.0 {
+                case .success:
+                    guard let resultString = result.1 else { return }
+                    calculatorView.fetchedRate(result: resultString)
+                case .failure:
+                    let alert: UIAlertController = .initErrorAlert(title: "오류", message: "금액을 입력해주세요")
+                    self.present(alert, animated: false)
+                }
+            }
+            .disposed(by: disposeBag)
     }
     
 }

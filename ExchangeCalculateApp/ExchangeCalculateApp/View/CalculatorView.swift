@@ -69,7 +69,25 @@ final class CalculatorView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func addViews() {
+    func bind(model: ExchangeItem) {
+        currencyLabel.text = model.currencyTitle
+        countryLabel.text = model.countryTitle
+        
+        // ConvertButton 클릭 시 TextField.text 이벤트 방출 관찰자
+        convertButton.rx.tap
+            .withLatestFrom(amountTextField.rx.text)
+            .bind(to: convertButtonTapEvents)
+            .disposed(by: disposeBag)
+    }
+    // 결과 레이블 텍스트 변경
+    func fetchedRate(result: String) {
+        self.resultLabel.text = result
+    }
+    
+}
+
+private extension CalculatorView {
+    func addViews() {
         [currencyLabel, countryLabel].forEach {
             labelStackView.addArrangedSubview($0)
         }
@@ -78,7 +96,7 @@ final class CalculatorView: UIView {
         }
     }
     
-    private func configureLayout() {
+    func configureLayout() {
         labelStackView.snp.makeConstraints {
             $0.top.equalTo(self.safeAreaLayoutGuide).inset(32)
             $0.centerX.equalToSuperview()
@@ -98,22 +116,4 @@ final class CalculatorView: UIView {
             $0.leading.trailing.equalToSuperview().inset(24)
         }
     }
-    
-    func bind(model: ExchangeItem) {
-        currencyLabel.text = model.currencyTitle
-        countryLabel.text = model.countryTitle
-        
-        // ConvertButton 클릭 시 TextField.text 이벤트 방출 관찰자
-        convertButton.rx.tap
-            .withLatestFrom(amountTextField.rx.text)
-            .bind(to: convertButtonTapEvents)
-            .disposed(by: disposeBag)
-    }
-    // 결과 레이블 텍스트 변경
-    func fetchedRate(result: String) {
-        self.resultLabel.text = result
-    }
-    
 }
-
-

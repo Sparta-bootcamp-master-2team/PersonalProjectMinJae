@@ -7,11 +7,11 @@ class ExchangeView: UIView {
     
     private let emptyView = EmptyView()
     
-    // 메인 TableView에 뿌려질 데이터 (ViewModel 구현 전 임시)
-    private var items: [ExchangeItem] = []
-    private var filteredItems: [ExchangeItem] = []
-    // VC로 이벤트 전달하기 위한 Subject
-    private(set) var cellTouchedEvents: PublishSubject<ExchangeItem> = .init()
+    // VC로 이벤트 전달하기 위한 Subjects
+    // cellTouchedEvents: Cell 클릭 시 이벤트 방출, VC에서 수신
+    // filteredTextEvents: SearchBar의 text값이 변경될 때 이벤트 방출, VC에서 수신
+    private(set) var cellTouchedEvents: PublishSubject<IndexPath> = .init()
+    private(set) var filteredTextEvents: PublishSubject<String?> = .init()
     private let disposeBag = DisposeBag()
     
     // 메인 TableView
@@ -25,6 +25,7 @@ class ExchangeView: UIView {
     }()
     
     private lazy var searchBar = UISearchBar()
+    
     // MARK: UITableViewDiffableDataSource
     typealias DataSource = UITableViewDiffableDataSource<Section, ExchangeItem>
     typealias Snapshot = NSDiffableDataSourceSnapshot<Section, ExchangeItem>
@@ -51,41 +52,24 @@ class ExchangeView: UIView {
     private func bind() {
         // SearchBar의 텍스트 변경마다 이벤트 방출
         searchBar.rx.text
-            .subscribe(onNext: { [weak self] text in
-                self?.filterItems(searchText: text ?? "")
-            })
+            .bind(to: filteredTextEvents)
             .disposed(by: disposeBag)
         
         // Cell 선택시 이벤트 방출
         exchangeTableView.rx.itemSelected
-            .map{ [unowned self] in
-                self.filteredItems[$0.row]
-            }
             .bind(to: cellTouchedEvents)
             .disposed(by: disposeBag)
     }
-    // 데이터 저장
-    func fetchData(rates: [String: Double]) {
-        for (key, value) in rates {
-            items.append(ExchangeItem(currencyTitle: key, rate: String(format: "%.4f", value)))
-        }
-        filterItems(searchText: "")
-    }
-    // 데이터 필터링 후 적용
-    private func filterItems(searchText: String) {
-        let text = searchText.uppercased()
-        filteredItems = items.filter { $0.currencyTitle.contains(text) || $0.countryTitle.uppercased().contains(text) }
-        
-        searchText == "" ? filteredItems = items : nil
-        
-        makeSnapshotApply()
+    // UI에 필요한 데이터 불러오기 (DTO -> ViewModel -> VC -> ExchangeView)
+    func fetchData(rates: [ExchangeItem]) {
+        makeSnapshotApply(rates: rates)
     }
     
     // Snapshot 생성
-    private func makeSnapshotApply() {
+    private func makeSnapshotApply(rates: [ExchangeItem]) {
         var snapShot = Snapshot()
         snapShot.appendSections([.main])
-        snapShot.appendItems(filteredItems)
+        snapShot.appendItems(rates)
         
         dataSource?.apply(snapShot, animatingDifferences: false)
         dataSource?.showEmptyView(tableView: exchangeTableView)
