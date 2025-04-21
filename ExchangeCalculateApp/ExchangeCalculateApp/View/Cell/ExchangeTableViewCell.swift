@@ -38,6 +38,12 @@ class ExchangeTableViewCell: UITableViewCell {
         return label
     }()
     
+    private let favoriteButton: UIButton = {
+        let button = UIButton()
+        button.setImage(UIImage(systemName: "star"), for: .normal)
+        return button
+    }()
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         addViews()
@@ -58,7 +64,7 @@ class ExchangeTableViewCell: UITableViewCell {
 
 private extension ExchangeTableViewCell {
     func addViews() {
-        [labelStackView, rateLabel].forEach {
+        [labelStackView, rateLabel, favoriteButton].forEach {
             contentView.addSubview($0)
         }
     }
@@ -70,10 +76,16 @@ private extension ExchangeTableViewCell {
         }
         
         rateLabel.snp.makeConstraints {
-            $0.trailing.equalToSuperview().inset(16)
+            $0.trailing.equalTo(favoriteButton.snp.leading).offset(-8)
             $0.centerY.equalToSuperview()
             $0.leading.greaterThanOrEqualTo(labelStackView.snp.trailing).offset(16)
             $0.width.equalTo(120)
+        }
+        
+        favoriteButton.snp.makeConstraints {
+            $0.centerY.equalToSuperview()
+            $0.trailing.equalToSuperview().inset(10)
+            $0.width.equalTo(32)
         }
     }
 }
