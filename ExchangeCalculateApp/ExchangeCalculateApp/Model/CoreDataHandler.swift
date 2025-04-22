@@ -32,7 +32,7 @@ struct CoreDataHandler {
                 if let lastExchanges = datas as? [FavoriteExchange] {
                     for item in lastExchanges {
                         if let currency = item.value(forKey: object.key.currency) as? String,
-                           let rate = item.value(forKey: object.key.rate) as? String,
+                           let rate = item.value(forKey: object.key.rate) as? Double,
                            let updatedTime = item.value(forKey: object.key.updatedTime) as? String {
                             result.append(LastExchangeItem(currency: currency,
                                                                   rate: rate,

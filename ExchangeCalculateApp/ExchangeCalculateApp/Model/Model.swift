@@ -16,7 +16,7 @@ struct Response: Codable {
 }
 struct LastExchangeItem {
     let currency: String
-    let rate: String
+    let rate: Double
     let updatedTime: String
 }
 // Cell Model
@@ -27,6 +27,7 @@ struct ExchangeItem: Hashable {
         return Self.dictionary[currencyTitle] ?? "Unknown"
     }
     var isFavorited: Bool = false
+    var changedRate: Double
     
     static let dictionary: [String: String] = [
         "USD": "미국",
