@@ -10,8 +10,10 @@ class ExchangeView: UIView {
     // VC로 이벤트 전달하기 위한 Subjects
     // cellTouchedEvents: Cell 클릭 시 이벤트 방출, VC에서 수신
     // filteredTextEvents: SearchBar의 text값이 변경될 때 이벤트 방출, VC에서 수신
+    // cellFavoriteButtonEvents: 즐겨찾기 버튼 클릭 시 이벤트 방출, View -> VC로 전달
     private(set) var cellTouchedEvents: PublishSubject<IndexPath> = .init()
     private(set) var filteredTextEvents: PublishSubject<String?> = .init()
+    private(set) var cellFavoriteButtonEvents: PublishSubject<String?> = .init()
     private let disposeBag = DisposeBag()
     
     // 메인 TableView
@@ -80,11 +82,22 @@ class ExchangeView: UIView {
         dataSource = DataSource(tableView: self.exchangeTableView) { tableView, indexPath, item in
             guard let cell = tableView.dequeueReusableCell(withIdentifier: ExchangeTableViewCell.identifier, for: indexPath) as? ExchangeTableViewCell else { return UITableViewCell() }
             cell.configure(model: item)
+            cell.bind()
+            
+            // 버튼 이벤트와 바인딩
+            // 셀 재사용 특성 dispose는 cell 내부의 disposeBag에 넣어야함
+            cell.favoriteButtonEvents
+                .withUnretained(self)
+                .map{ $0.1 }
+                .bind(to: self.cellFavoriteButtonEvents)
+                .disposed(by: cell.disposeBag)
+            
             return cell
         }
     }
 }
 
+// MARK: private extension
 private extension ExchangeView {
     private func addViews() {
         [exchangeTableView, searchBar].forEach {

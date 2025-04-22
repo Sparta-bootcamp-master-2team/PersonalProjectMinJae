@@ -2,11 +2,11 @@ import UIKit
 import SnapKit
 import RxSwift
 
-final class ViewController: UIViewController {
+final class ExchangeViewController: UIViewController {
 
     private let exchangeView = ExchangeView()
     private let disposeBag = DisposeBag()
-    private let viewModel = ViewModel()
+    private let viewModel = ExchangeViewModel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -39,17 +39,29 @@ final class ViewController: UIViewController {
             }
             .disposed(by: disposeBag)
         
-        // 네트워크 작업 결과s이벤트 수신
+        // Cell Favorite Button Event -> ExchangeView -> VC 수신받기
+        exchangeView.cellFavoriteButtonEvents
+            .subscribe(onNext: { [weak self] currency in
+                self?.viewModel.fetchFavorite(currency: currency)
+            })
+            .disposed(by: disposeBag)
+        
+        // 네트워크 작업 결과 이벤트 수신
         viewModel.state
             .observe(on: MainScheduler.instance)
             .subscribe {[weak self] state in
                 guard let self else { return }
                 let items = self.viewModel.exchageItemDTO.items
                 switch state {
-                case .success:
+                case .dataFetchSuccess:
                     self.exchangeView.fetchData(rates: items)
-                case .failure:
+                case .dataFetchFailure:
                     let alert: UIAlertController = .initErrorAlert(title: "오류", message: "데이터를 불러올 수 없습니다.")
+                    self.present(alert, animated: false)
+                case .dataUpdated:
+                    self.exchangeView.fetchData(rates: items)
+                case .coreDataFetchFailure:
+                    let alert: UIAlertController = .initErrorAlert(title: "오류", message: "즐겨찾기 수정에 실패하였습니다.")
                     self.present(alert, animated: false)
                 }
             }
@@ -58,7 +70,7 @@ final class ViewController: UIViewController {
 }
 
 // MARK: Add SubView, Configure UI,Layout
-private extension ViewController {
+private extension ExchangeViewController {
     func addViews() {
         view.addSubview(exchangeView)
     }
