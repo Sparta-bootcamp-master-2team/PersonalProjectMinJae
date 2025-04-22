@@ -14,6 +14,8 @@
 		AA7AE6732DB60D3B004B8A33 /* ExchangeCalculateApp.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = AA7AE6552DB60D3B004B8A33 /* ExchangeCalculateApp.xcdatamodeld */; };
 		AA7AE6992DB621A9004B8A33 /* FavoriteExchange+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA7AE6972DB621A9004B8A33 /* FavoriteExchange+CoreDataClass.swift */; };
 		AA7AE69A2DB621A9004B8A33 /* FavoriteExchange+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA7AE6982DB621A9004B8A33 /* FavoriteExchange+CoreDataProperties.swift */; };
+		AA7AE70A2DB76B23004B8A33 /* LastExchange+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA7AE7092DB76B23004B8A33 /* LastExchange+CoreDataProperties.swift */; };
+		AA7AE70B2DB76B23004B8A33 /* LastExchange+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA7AE7082DB76B23004B8A33 /* LastExchange+CoreDataClass.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,6 +42,8 @@
 		AA7AE6702DB60D3B004B8A33 /* ExchangeCalculateApp.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ExchangeCalculateApp.xcdatamodel; sourceTree = "<group>"; };
 		AA7AE6972DB621A9004B8A33 /* FavoriteExchange+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FavoriteExchange+CoreDataClass.swift"; sourceTree = "<group>"; };
 		AA7AE6982DB621A9004B8A33 /* FavoriteExchange+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FavoriteExchange+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		AA7AE7082DB76B23004B8A33 /* LastExchange+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LastExchange+CoreDataClass.swift"; sourceTree = "<group>"; };
+		AA7AE7092DB76B23004B8A33 /* LastExchange+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LastExchange+CoreDataProperties.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -105,6 +109,8 @@
 		AA4CCE6D2DAF3A0700C6AAAE = {
 			isa = PBXGroup;
 			children = (
+				AA7AE7082DB76B23004B8A33 /* LastExchange+CoreDataClass.swift */,
+				AA7AE7092DB76B23004B8A33 /* LastExchange+CoreDataProperties.swift */,
 				AA7AE6552DB60D3B004B8A33 /* ExchangeCalculateApp.xcdatamodeld */,
 				AA7AE6972DB621A9004B8A33 /* FavoriteExchange+CoreDataClass.swift */,
 				AA7AE6982DB621A9004B8A33 /* FavoriteExchange+CoreDataProperties.swift */,
@@ -288,6 +294,8 @@
 			files = (
 				AA7AE6732DB60D3B004B8A33 /* ExchangeCalculateApp.xcdatamodeld in Sources */,
 				AA7AE6992DB621A9004B8A33 /* FavoriteExchange+CoreDataClass.swift in Sources */,
+				AA7AE70A2DB76B23004B8A33 /* LastExchange+CoreDataProperties.swift in Sources */,
+				AA7AE70B2DB76B23004B8A33 /* LastExchange+CoreDataClass.swift in Sources */,
 				AA7AE69A2DB621A9004B8A33 /* FavoriteExchange+CoreDataProperties.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

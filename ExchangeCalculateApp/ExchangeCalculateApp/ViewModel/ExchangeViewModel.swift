@@ -22,7 +22,7 @@ class ExchangeViewModel: ViewModelProtocol {
     
     init() {
         self.state = .init()
-        exchageItemDTO.fetchFavorite() ? nil : state.onNext(.coreDataFetchFailure)
+        exchageItemDTO.fetchCoreData(entity: .favorite) ? nil : state.onNext(.coreDataFetchFailure)
     }
     
     // 데이터 불러오고 이벤트 방출
@@ -50,10 +50,9 @@ class ExchangeViewModel: ViewModelProtocol {
         if item[0].isFavorited {
             result = exchageItemDTO.removeFavorite(currency)
         } else {
-            result = exchageItemDTO.saveFavorite(currency)
+            result = exchageItemDTO.saveCoreData(entity: .favorite, currency: currency)
         }
         result ? state.onNext(.dataUpdated) : state.onNext(.coreDataFetchFailure)
-//        state.onNext(.dataUpdated)
     }
     
 }
