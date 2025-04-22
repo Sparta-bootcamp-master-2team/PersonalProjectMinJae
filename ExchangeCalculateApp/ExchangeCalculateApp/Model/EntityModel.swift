@@ -34,7 +34,7 @@ struct FavoriteEntity: Entityable {
 struct LastExchangeEntity: Entityable {
     typealias ObjectType = LastExchange
     var type = LastExchange.self
-    var name: String = "LastExchangeItems"
+    var name: String = "LastExchange"
     var key: Key
 }
 
@@ -42,14 +42,17 @@ struct LastExchangeEntity: Entityable {
 struct Key {
     var currency: String = ""
     var rate: String = ""
-    var updatedTime: String = ""
+    var updateTime: String = ""
+    var changeRate: String = ""
     
     static func setUpFavoriteKeys() -> Key {
         return Key(currency: "currency")
     }
     static func setUpLastExchangeKeys() -> Key {
-        return Key(currency: "currency", rate: "rate",
-                   updatedTime: "updatedTime")
+        return Key(currency: "currency",
+                   rate: "rate",
+                   updateTime: "updateTime",
+                   changeRate: "changeRate")
     }
     
 }
