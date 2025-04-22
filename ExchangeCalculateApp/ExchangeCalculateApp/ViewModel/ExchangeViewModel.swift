@@ -22,8 +22,9 @@ class ExchangeViewModel: ViewModelProtocol {
     
     init() {
         self.state = .init()
+        exchageItemDTO.fetchLastExchangeItems()
         exchageItemDTO.fetchCoreData(entity: .favorite) ? nil : state.onNext(.coreDataFetchFailure)
-        exchageItemDTO.fetchMockData()
+        
     }
     
     // 데이터 불러오고 이벤트 방출
@@ -31,7 +32,9 @@ class ExchangeViewModel: ViewModelProtocol {
         Task {
             do {
                 let result = try await networkManager.fetch(type: Response.self, for: ServerURL.string)
-                exchageItemDTO.fetchItems(response: result)
+                await MainActor.run {
+                    exchageItemDTO.fetchItems(response: result)
+                }
                 state.onNext(.dataFetchSuccess)
             } catch {
                 state.onNext(.dataFetchFailure)
