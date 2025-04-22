@@ -9,7 +9,7 @@ struct CoreDataHandler {
         let container = appDelegate.persistentContainer
         var result: [Any] = []
         do {
-            
+            // 즐겨찾기 항목 불러오기
             if case .favorite = entity {
                 let object = entity.favorite
                 let type = object.type
@@ -23,7 +23,7 @@ struct CoreDataHandler {
                     }
                 }
             }
-            
+            // 최근 환율 항목 불러오기
             if case .lastExchangeItem = entity {
                 let object = entity.lastExchangeItem
                 let type = object.type
@@ -54,7 +54,7 @@ struct CoreDataHandler {
                                 updatedTime: String? = nil) -> Bool {
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         let container = appDelegate.persistentContainer
-        
+        // 기본으로 즐겨찾기 엔티티로 설정하나, 파라미터의 rate가 nil이 아닌 경우엔 최근 환율정보를 저장하므로 객체 변경
         var object: any Entityable = entity.favorite
         if rate != nil { object = entity.lastExchangeItem }
         
