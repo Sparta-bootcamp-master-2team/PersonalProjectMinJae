@@ -2,7 +2,7 @@ import UIKit
 import SnapKit
 import RxSwift
 
-final class ViewController: UIViewController {
+final class ExchangeViewController: UIViewController {
 
     private let exchangeView = ExchangeView()
     private let disposeBag = DisposeBag()
@@ -67,7 +67,7 @@ final class ViewController: UIViewController {
 }
 
 // MARK: Add SubView, Configure UI,Layout
-private extension ViewController {
+private extension ExchangeViewController {
     func addViews() {
         view.addSubview(exchangeView)
     }
