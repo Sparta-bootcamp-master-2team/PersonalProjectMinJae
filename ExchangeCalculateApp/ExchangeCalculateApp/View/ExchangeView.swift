@@ -85,11 +85,12 @@ class ExchangeView: UIView {
             cell.bind()
             
             // 버튼 이벤트와 바인딩
+            // 셀 재사용 특성 dispose는 cell 내부의 disposeBag에 넣어야함
             cell.favoriteButtonEvents
                 .withUnretained(self)
                 .map{ $0.1 }
                 .bind(to: self.cellFavoriteButtonEvents)
-                .disposed(by: self.disposeBag)
+                .disposed(by: cell.disposeBag)
             
             return cell
         }
