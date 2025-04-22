@@ -7,7 +7,7 @@ enum DataLoadState {
     case update
 }
 
-class ViewModel: ViewModelProtocol {
+class ExchangeViewModel: ViewModelProtocol {
     
     typealias State = PublishSubject<DataLoadState>
 

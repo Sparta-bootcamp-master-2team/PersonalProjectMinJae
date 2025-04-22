@@ -6,7 +6,7 @@ final class ExchangeViewController: UIViewController {
 
     private let exchangeView = ExchangeView()
     private let disposeBag = DisposeBag()
-    private let viewModel = ViewModel()
+    private let viewModel = ExchangeViewModel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
