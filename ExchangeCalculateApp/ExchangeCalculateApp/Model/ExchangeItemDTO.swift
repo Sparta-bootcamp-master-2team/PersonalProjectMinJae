@@ -6,9 +6,11 @@ struct ExchangeItemDTO {
     var items: [ExchangeItem] = []
     var favorites: [String] = []
     var lastExchangeItems: [LastExchangeItem] = []
+    
     private var coreDataHandler = CoreDataHandler()
     // 불러온 데이터를 저장
     mutating func fetchItems(response: Response) {
+        // items에 저장
         for (key, value) in response.rates {
             let lastRate = lastExchangeItems.filter{ $0.currency == key }.first
             let chagedRate = value - (lastRate?.rate ?? 0.0)
@@ -17,6 +19,38 @@ struct ExchangeItemDTO {
                                       isFavorited: favorites.contains(key) ? true : false,
                                       changedRate: chagedRate))
         }
+        
+        // 이전 데이터 업데이트 필요 여부 파악
+        let updateTime = response.updateTime
+        let lastUpdateTime = lastExchangeItems.first?.updateTime ?? ""
+        
+        if updateTime != lastUpdateTime {
+            if !lastExchangeItems.isEmpty {
+                // changeRate 계산 및 갱신
+                for (key, value) in response.rates {
+                    let lastRate = lastExchangeItems.filter{ $0.currency == key }.first?.rate ?? 0.0
+                    let currentRate = value
+                    let _ = coreDataHandler.updateLastExchangeItem(entity: .lastExchangeItem,
+                                                           currency: key,
+                                                           rate: currentRate,
+                                                           updateTime: response.updateTime,
+                                                           changeRate: currentRate - lastRate)
+                }
+            } else {
+                // 이전 데이터 주입
+                for (key, value) in response.rates {
+                    let _ = coreDataHandler.saveCoreData(entity: .lastExchangeItem,
+                                                         currency: key,
+                                                         rate: value,
+                                                         updateTime: response.updateTime,
+                                                         changeRate: value)
+                }
+            }
+            
+        } else {
+            // continue
+        }
+        fetchLastExchangeItems()
         // 정렬
         sortItems()
     }
@@ -26,13 +60,17 @@ struct ExchangeItemDTO {
         let favorites = self.items.filter { $0.isFavorited }.sorted{ $0.currencyTitle < $1.currencyTitle }
         let nonFavorites = self.items.filter { !$0.isFavorited }.sorted{ $0.currencyTitle < $1.currencyTitle }
         self.items = favorites + nonFavorites
-        
     }
+    
     mutating func fetchMockData() {
         let mock = MockData.mockRates
         for (key, value) in mock {
-            lastExchangeItems.append(LastExchangeItem(currency: key, rate: value, updatedTime: "mock"))
+            lastExchangeItems.append(LastExchangeItem(currency: key, rate: value, updateTime: "mock", change: 0.0))
         }
+    }
+    
+    mutating func fetchLastExchangeItems() {
+        self.lastExchangeItems = coreDataHandler.fetchCoreData(entity: .lastExchangeItem) as! [LastExchangeItem]
     }
     // 필터링된 데이터 리턴
     func filterItems(searchText: String) -> [ExchangeItem] {
@@ -59,12 +97,14 @@ struct ExchangeItemDTO {
     // CorData Create
     mutating func saveCoreData(entity: Entity,
                                currency: String,
-                               rate: String? = nil,
-                               updatedTime: String? = nil) -> Bool {
+                               rate: Double? = nil,
+                               updateTime: String? = nil,
+                               changeRate: Double? = nil) -> Bool {
         let result = coreDataHandler.saveCoreData(entity: entity,
                                                   currency: currency,
                                                   rate: rate,
-                                                  updatedTime: updatedTime)
+                                                  updateTime: updateTime,
+                                                  changeRate: changeRate)
         updateItems(currency, true)
         return result
     }
@@ -75,6 +115,7 @@ struct ExchangeItemDTO {
         return result
     }
     
+    // 즐겨찾기 항목 업데이트
     mutating func updateItems(_ currency: String,_ isFavorited: Bool) {
         for i in 0..<items.count {
             if items[i].currencyTitle == currency {
