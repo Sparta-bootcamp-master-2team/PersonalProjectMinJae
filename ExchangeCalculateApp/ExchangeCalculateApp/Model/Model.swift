@@ -20,6 +20,7 @@ struct ExchangeItem: Hashable {
     var countryTitle: String {
         return Self.dictionary[currencyTitle] ?? "Unknown"
     }
+    var isFavorited: Bool = false
     
     static let dictionary: [String: String] = [
         "USD": "미국",
