@@ -1,3 +1,11 @@
+//
+//  LastExchange+CoreDataProperties.swift
+//  ExchangeCalculateApp
+//
+//  Created by main on 4/22/25.
+//
+//
+
 import Foundation
 import CoreData
 
@@ -10,7 +18,8 @@ extension LastExchange {
 
     @NSManaged public var currency: String?
     @NSManaged public var rate: Double
-    @NSManaged public var updatedTime: String?
+    @NSManaged public var lastUpdateTime: String?
+    @NSManaged public var nextUpdateTime: String?
 
 }
 
