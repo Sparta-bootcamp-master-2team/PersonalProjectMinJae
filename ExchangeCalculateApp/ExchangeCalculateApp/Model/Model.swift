@@ -5,20 +5,23 @@ struct Response: Codable {
     let result: String
     let base: String
     let rates: [String: Double]
-    let lastUpdatedTime: String
+    let updateTime: String
     
     enum CodingKeys: String, CodingKey {
         case result
         case base = "base_code"
         case rates
-        case lastUpdatedTime = "time_last_update_utc"
+        case updateTime = "time_last_update_utc"
     }
 }
+
 struct LastExchangeItem {
     let currency: String
     let rate: Double
-    let updatedTime: String
+    let updateTime: String
+    let change: Double
 }
+
 // Cell Model
 struct ExchangeItem: Hashable {
     let currencyTitle: String
