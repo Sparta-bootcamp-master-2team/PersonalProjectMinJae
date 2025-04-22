@@ -10,9 +10,12 @@ struct ExchangeItemDTO {
     // 불러온 데이터를 저장
     mutating func fetchItems(response: Response) {
         for (key, value) in response.rates {
+            let lastRate = lastExchangeItems.filter{ $0.currency == key }.first
+            let chagedRate = value - (lastRate?.rate ?? 0.0)
             items.append(ExchangeItem(currencyTitle: key,
                                       rate: String(format: "%.4f", value),
-                                      isFavorited: favorites.contains(key) ? true : false ))
+                                      isFavorited: favorites.contains(key) ? true : false,
+                                      changedRate: chagedRate))
         }
         // 정렬
         sortItems()
@@ -25,7 +28,12 @@ struct ExchangeItemDTO {
         self.items = favorites + nonFavorites
         
     }
-    
+    mutating func fetchMockData() {
+        let mock = MockData.mockRates
+        for (key, value) in mock {
+            lastExchangeItems.append(LastExchangeItem(currency: key, rate: value, updatedTime: "mock"))
+        }
+    }
     // 필터링된 데이터 리턴
     func filterItems(searchText: String) -> [ExchangeItem] {
         let text = searchText.uppercased()

@@ -23,6 +23,7 @@ class ExchangeViewModel: ViewModelProtocol {
     init() {
         self.state = .init()
         exchageItemDTO.fetchCoreData(entity: .favorite) ? nil : state.onNext(.coreDataFetchFailure)
+        exchageItemDTO.fetchMockData()
     }
     
     // 데이터 불러오고 이벤트 방출
