@@ -1,6 +1,7 @@
 import Foundation
 import CoreData
 
+
 extension FavoriteExchange {
 
     @nonobjc public class func fetchRequest() -> NSFetchRequest<FavoriteExchange> {
