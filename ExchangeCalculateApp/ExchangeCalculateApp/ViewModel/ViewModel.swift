@@ -4,6 +4,7 @@ import RxSwift
 enum DataLoadState {
     case success
     case failure
+    case update
 }
 
 class ViewModel: ViewModelProtocol {
@@ -20,6 +21,7 @@ class ViewModel: ViewModelProtocol {
     
     init() {
         self.state = .init()
+        exchageItemDTO.fetchFavorite()
     }
     
     // 데이터 불러오고 이벤트 방출
@@ -33,6 +35,22 @@ class ViewModel: ViewModelProtocol {
                 state.onNext(.failure)
             }
         }
+    }
+    // 즐겨찾기 항목 저장
+    func saveFavorite(currency: String?) {
+        guard let currency else { return }
+        let item = exchageItemDTO.items.filter{ $0.currencyTitle == currency }
+        if item.isEmpty {
+            print("filter error")
+            return
+        }
+        
+        if item[0].isFavorited {
+            exchageItemDTO.removeFavorite(currency)
+        } else {
+            exchageItemDTO.saveFavorite(currency)
+        }
+        state.onNext(.update)
     }
     
 }

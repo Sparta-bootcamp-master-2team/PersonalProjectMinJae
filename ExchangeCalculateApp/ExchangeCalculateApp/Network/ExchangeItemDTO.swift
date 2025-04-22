@@ -6,13 +6,23 @@ struct ExchangeItemDTO {
     var items: [ExchangeItem] = []
     var favorites: [String] = []
     
-    // 데이터 저장
+    // 불러온 데이터를 저장
     mutating func fetchItems(response: Response) {
         for (key, value) in response.rates {
-            items.append(ExchangeItem(currencyTitle: key, rate: String(format: "%.4f", value)))
+            items.append(ExchangeItem(currencyTitle: key,
+                                      rate: String(format: "%.4f", value),
+                                      isFavorited: favorites.contains(key) ? true : false ))
         }
         // 정렬
-        items.sort { $0.currencyTitle < $1.currencyTitle }
+        sortItems()
+    }
+    
+    // 정렬 메서드
+    mutating func sortItems() {
+        let favorites = self.items.filter { $0.isFavorited }.sorted{ $0.currencyTitle < $1.currencyTitle }
+        let nonFavorites = self.items.filter { !$0.isFavorited }.sorted{ $0.currencyTitle < $1.currencyTitle }
+        self.items = favorites + nonFavorites
+        
     }
     // 필터링된 데이터 리턴
     func filterItems(searchText: String) -> [ExchangeItem] {
@@ -21,7 +31,7 @@ struct ExchangeItemDTO {
         if searchText == "" { filteredItems = self.items }
         return filteredItems
     }
-    
+    // 즐겨찾기 항목 CoreData에서 불러오기
     mutating func fetchFavorite() {
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         let container = appDelegate.persistentContainer
@@ -35,10 +45,9 @@ struct ExchangeItemDTO {
         } catch {
             print("Error fetching data: \(error)")
         }
-        print(favorites)
     }
-    
-    func saveFavorite(_ currency: String) {
+    // CorData Create
+    mutating func saveFavorite(_ currency: String) {
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         let container = appDelegate.persistentContainer
         
@@ -48,9 +57,37 @@ struct ExchangeItemDTO {
         
         do {
             try container.viewContext.save()
-            print("저장 성공")
+            updateItems(currency, true)
         } catch {
             print("저장 실패")
         }
+    }
+    // CoreData Remove
+    mutating func removeFavorite(_ currency: String) {
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        let container = appDelegate.persistentContainer
+        let fetchRequest = FavoriteExchange.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "currency == %@", currency)
+        
+        do {
+            let result = try container.viewContext.fetch(fetchRequest)
+            
+            for data in result as [NSManagedObject] {
+                container.viewContext.delete(data)
+            }
+            updateItems(currency, false)
+        } catch {
+            print("삭제 실패")
+        }
+    }
+    // CoreData Update
+    mutating func updateItems(_ currency: String,_ isFavorited: Bool) {
+        for i in 0..<items.count {
+            if items[i].currencyTitle == currency {
+                items[i].isFavorited = isFavorited
+                break
+            }
+        }
+        sortItems()
     }
 }
