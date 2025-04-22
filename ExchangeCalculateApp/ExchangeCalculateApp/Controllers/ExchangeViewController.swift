@@ -42,7 +42,7 @@ final class ExchangeViewController: UIViewController {
         // Cell Favorite Button Event -> ExchangeView -> VC 수신받기
         exchangeView.cellFavoriteButtonEvents
             .subscribe(onNext: { [weak self] currency in
-                self?.viewModel.saveFavorite(currency: currency)
+                self?.viewModel.fetchFavorite(currency: currency)
             })
             .disposed(by: disposeBag)
         
@@ -53,12 +53,15 @@ final class ExchangeViewController: UIViewController {
                 guard let self else { return }
                 let items = self.viewModel.exchageItemDTO.items
                 switch state {
-                case .success:
+                case .dataFetchSuccess:
                     self.exchangeView.fetchData(rates: items)
-                case .update:
-                    self.exchangeView.fetchData(rates: items)
-                case .failure:
+                case .dataFetchFailure:
                     let alert: UIAlertController = .initErrorAlert(title: "오류", message: "데이터를 불러올 수 없습니다.")
+                    self.present(alert, animated: false)
+                case .dataUpdated:
+                    self.exchangeView.fetchData(rates: items)
+                case .coreDataFetchFailure:
+                    let alert: UIAlertController = .initErrorAlert(title: "오류", message: "즐겨찾기 수정에 실패하였습니다.")
                     self.present(alert, animated: false)
                 }
             }

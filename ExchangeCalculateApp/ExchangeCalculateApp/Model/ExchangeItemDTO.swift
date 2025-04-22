@@ -32,7 +32,7 @@ struct ExchangeItemDTO {
         return filteredItems
     }
     // 즐겨찾기 항목 CoreData에서 불러오기
-    mutating func fetchFavorite() {
+    mutating func fetchFavorite() -> Bool {
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         let container = appDelegate.persistentContainer
         do {
@@ -42,28 +42,30 @@ struct ExchangeItemDTO {
                     self.favorites.append(name)
                 }
             }
+            return true
         } catch {
-            print("Error fetching data: \(error)")
+            return false
         }
     }
     // CorData Create
-    mutating func saveFavorite(_ currency: String) {
+    mutating func saveFavorite(_ currency: String) -> Bool {
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         let container = appDelegate.persistentContainer
         
-        guard let entity = NSEntityDescription.entity(forEntityName: FavoriteExchange.entityName, in: container.viewContext) else { return }
+        guard let entity = NSEntityDescription.entity(forEntityName: FavoriteExchange.entityName, in: container.viewContext) else { return false }
         let newFavorite = NSManagedObject(entity: entity, insertInto: container.viewContext)
         newFavorite.setValue(currency, forKey: FavoriteExchange.Key.currency)
         
         do {
             try container.viewContext.save()
             updateItems(currency, true)
+            return true
         } catch {
-            print("저장 실패")
+            return false
         }
     }
     // CoreData Remove
-    mutating func removeFavorite(_ currency: String) {
+    mutating func removeFavorite(_ currency: String) -> Bool {
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         let container = appDelegate.persistentContainer
         let fetchRequest = FavoriteExchange.fetchRequest()
@@ -76,8 +78,9 @@ struct ExchangeItemDTO {
                 container.viewContext.delete(data)
             }
             updateItems(currency, false)
+            return true
         } catch {
-            print("삭제 실패")
+            return false
         }
     }
     // CoreData Update
