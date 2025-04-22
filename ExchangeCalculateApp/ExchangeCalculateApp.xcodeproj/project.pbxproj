@@ -40,29 +40,17 @@
 		AA4CCEA12DAF3A0800C6AAAE /* Exceptions for "ExchangeCalculateApp" folder in "ExchangeCalculateApp" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				CoreData/ExchangeCalculateApp.xcdatamodeld,
 				Info.plist,
 			);
 			target = AA4CCE752DAF3A0700C6AAAE /* ExchangeCalculateApp */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
-/* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
-		AA7AE7252DB7BBF6004B8A33 /* Exceptions for "ExchangeCalculateApp" folder in "Compile Sources" phase from "ExchangeCalculateApp" target */ = {
-			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
-			buildPhase = AA4CCE722DAF3A0700C6AAAE /* Sources */;
-			membershipExceptions = (
-				CoreData/ExchangeCalculateApp.xcdatamodeld,
-			);
-		};
-/* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		AA4CCE782DAF3A0700C6AAAE /* ExchangeCalculateApp */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				AA4CCEA12DAF3A0800C6AAAE /* Exceptions for "ExchangeCalculateApp" folder in "ExchangeCalculateApp" target */,
-				AA7AE7252DB7BBF6004B8A33 /* Exceptions for "ExchangeCalculateApp" folder in "Compile Sources" phase from "ExchangeCalculateApp" target */,
 			);
 			path = ExchangeCalculateApp;
 			sourceTree = "<group>";

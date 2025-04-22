@@ -13,7 +13,7 @@ struct ExchangeItemDTO {
         // items에 저장
         for (key, value) in response.rates {
             let lastRate = lastExchangeItems.filter{ $0.currency == key }.first
-            let chagedRate = value - (lastRate?.rate ?? 0.0)
+            let chagedRate = value - (lastRate?.rate ?? value)
             items.append(ExchangeItem(currencyTitle: key,
                                       rate: String(format: "%.4f", value),
                                       isFavorited: favorites.contains(key) ? true : false,
@@ -25,6 +25,7 @@ struct ExchangeItemDTO {
         let lastUpdateTime = lastExchangeItems.first?.updateTime ?? ""
         
         if updateTime != lastUpdateTime {
+            // 이전 데이터 업데이트 필요
             if !lastExchangeItems.isEmpty {
                 // changeRate 계산 및 갱신
                 for (key, value) in response.rates {
@@ -46,11 +47,7 @@ struct ExchangeItemDTO {
                                                          changeRate: value)
                 }
             }
-            
-        } else {
-            // continue
         }
-        fetchLastExchangeItems()
         // 정렬
         sortItems()
     }
@@ -60,17 +57,6 @@ struct ExchangeItemDTO {
         let favorites = self.items.filter { $0.isFavorited }.sorted{ $0.currencyTitle < $1.currencyTitle }
         let nonFavorites = self.items.filter { !$0.isFavorited }.sorted{ $0.currencyTitle < $1.currencyTitle }
         self.items = favorites + nonFavorites
-    }
-    
-    mutating func fetchMockData() {
-        let mock = MockData.mockRates
-        for (key, value) in mock {
-            lastExchangeItems.append(LastExchangeItem(currency: key, rate: value, updateTime: "mock", change: 0.0))
-        }
-    }
-    
-    mutating func fetchLastExchangeItems() {
-        self.lastExchangeItems = coreDataHandler.fetchCoreData(entity: .lastExchangeItem) as! [LastExchangeItem]
     }
     // 필터링된 데이터 리턴
     func filterItems(searchText: String) -> [ExchangeItem] {

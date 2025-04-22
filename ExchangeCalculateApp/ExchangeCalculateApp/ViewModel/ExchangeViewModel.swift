@@ -22,7 +22,7 @@ class ExchangeViewModel: ViewModelProtocol {
     
     init() {
         self.state = .init()
-        exchageItemDTO.fetchLastExchangeItems()
+        let _ = exchageItemDTO.fetchCoreData(entity: .lastExchangeItem) 
         exchageItemDTO.fetchCoreData(entity: .favorite) ? nil : state.onNext(.coreDataFetchFailure)
         
     }
@@ -46,7 +46,6 @@ class ExchangeViewModel: ViewModelProtocol {
         guard let currency else { return }
         let item = exchageItemDTO.items.filter{ $0.currencyTitle == currency }
         if item.isEmpty {
-            print("filter error")
             return
         }
         var result = false
