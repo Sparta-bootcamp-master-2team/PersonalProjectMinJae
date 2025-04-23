@@ -22,7 +22,9 @@ class ExchangeViewModel: ViewModelProtocol {
     
     init() {
         self.state = .init()
-        exchageItemDTO.fetchFavorite() ? nil : state.onNext(.coreDataFetchFailure)
+        let _ = exchageItemDTO.fetchCoreData(entity: .lastExchangeItem) 
+        exchageItemDTO.fetchCoreData(entity: .favorite) ? nil : state.onNext(.coreDataFetchFailure)
+        
     }
     
     // 데이터 불러오고 이벤트 방출
@@ -30,7 +32,9 @@ class ExchangeViewModel: ViewModelProtocol {
         Task {
             do {
                 let result = try await networkManager.fetch(type: Response.self, for: ServerURL.string)
-                exchageItemDTO.fetchItems(response: result)
+                await MainActor.run {
+                    exchageItemDTO.fetchItems(response: result)
+                }
                 state.onNext(.dataFetchSuccess)
             } catch {
                 state.onNext(.dataFetchFailure)
@@ -42,7 +46,6 @@ class ExchangeViewModel: ViewModelProtocol {
         guard let currency else { return }
         let item = exchageItemDTO.items.filter{ $0.currencyTitle == currency }
         if item.isEmpty {
-            print("filter error")
             return
         }
         var result = false
@@ -50,10 +53,9 @@ class ExchangeViewModel: ViewModelProtocol {
         if item[0].isFavorited {
             result = exchageItemDTO.removeFavorite(currency)
         } else {
-            result = exchageItemDTO.saveFavorite(currency)
+            result = exchageItemDTO.saveCoreData(entity: .favorite, currency: currency)
         }
         result ? state.onNext(.dataUpdated) : state.onNext(.coreDataFetchFailure)
-//        state.onNext(.dataUpdated)
     }
     
 }

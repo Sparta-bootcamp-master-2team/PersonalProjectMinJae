@@ -5,13 +5,48 @@ import UIKit
 struct ExchangeItemDTO {
     var items: [ExchangeItem] = []
     var favorites: [String] = []
+    var lastExchangeItems: [LastExchangeItem] = []
     
+    private var coreDataHandler = CoreDataHandler()
     // 불러온 데이터를 저장
     mutating func fetchItems(response: Response) {
+        // items에 저장
         for (key, value) in response.rates {
+            let lastRate = lastExchangeItems.filter{ $0.currency == key }.first
+            let chagedRate = value - (lastRate?.rate ?? value)
             items.append(ExchangeItem(currencyTitle: key,
                                       rate: String(format: "%.4f", value),
-                                      isFavorited: favorites.contains(key) ? true : false ))
+                                      isFavorited: favorites.contains(key) ? true : false,
+                                      changedRate: chagedRate))
+        }
+        
+        // 이전 데이터 업데이트 필요 여부 파악
+        let updateTime = response.updateTime
+        let lastUpdateTime = lastExchangeItems.first?.updateTime ?? ""
+        
+        if updateTime != lastUpdateTime {
+            // 이전 데이터 업데이트 필요
+            if !lastExchangeItems.isEmpty {
+                // changeRate 계산 및 갱신
+                for (key, value) in response.rates {
+                    let lastRate = lastExchangeItems.filter{ $0.currency == key }.first?.rate ?? 0.0
+                    let currentRate = value
+                    let _ = coreDataHandler.updateLastExchangeItem(entity: .lastExchangeItem,
+                                                           currency: key,
+                                                           rate: currentRate,
+                                                           updateTime: response.updateTime,
+                                                           changeRate: currentRate - lastRate)
+                }
+            } else {
+                // 이전 데이터 주입
+                for (key, value) in response.rates {
+                    let _ = coreDataHandler.saveCoreData(entity: .lastExchangeItem,
+                                                         currency: key,
+                                                         rate: value,
+                                                         updateTime: response.updateTime,
+                                                         changeRate: value)
+                }
+            }
         }
         // 정렬
         sortItems()
@@ -22,7 +57,6 @@ struct ExchangeItemDTO {
         let favorites = self.items.filter { $0.isFavorited }.sorted{ $0.currencyTitle < $1.currencyTitle }
         let nonFavorites = self.items.filter { !$0.isFavorited }.sorted{ $0.currencyTitle < $1.currencyTitle }
         self.items = favorites + nonFavorites
-        
     }
     // 필터링된 데이터 리턴
     func filterItems(searchText: String) -> [ExchangeItem] {
@@ -31,59 +65,43 @@ struct ExchangeItemDTO {
         if searchText == "" { filteredItems = self.items }
         return filteredItems
     }
-    // 즐겨찾기 항목 CoreData에서 불러오기
-    mutating func fetchFavorite() -> Bool {
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        let container = appDelegate.persistentContainer
-        do {
-            let favoriteString = try container.viewContext.fetch(FavoriteExchange.fetchRequest())
-            for item in favoriteString as [NSManagedObject] {
-                if let name = item.value(forKey: FavoriteExchange.Key.currency) as? String {
-                    self.favorites.append(name)
-                }
-            }
-            return true
-        } catch {
-            return false
+    
+    // CoreData Read
+    mutating func fetchCoreData(entity: Entity) -> Bool {
+        let result = coreDataHandler.fetchCoreData(entity: entity)
+        guard let result else { return false }
+        if case .favorite = entity {
+            self.favorites = result as! [String]
         }
+        if case .lastExchangeItem = entity {
+            self.lastExchangeItems = result as! [LastExchangeItem]
+        }
+        
+        return true
     }
+    
     // CorData Create
-    mutating func saveFavorite(_ currency: String) -> Bool {
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        let container = appDelegate.persistentContainer
-        
-        guard let entity = NSEntityDescription.entity(forEntityName: FavoriteExchange.entityName, in: container.viewContext) else { return false }
-        let newFavorite = NSManagedObject(entity: entity, insertInto: container.viewContext)
-        newFavorite.setValue(currency, forKey: FavoriteExchange.Key.currency)
-        
-        do {
-            try container.viewContext.save()
-            updateItems(currency, true)
-            return true
-        } catch {
-            return false
-        }
+    mutating func saveCoreData(entity: Entity,
+                               currency: String,
+                               rate: Double? = nil,
+                               updateTime: String? = nil,
+                               changeRate: Double? = nil) -> Bool {
+        let result = coreDataHandler.saveCoreData(entity: entity,
+                                                  currency: currency,
+                                                  rate: rate,
+                                                  updateTime: updateTime,
+                                                  changeRate: changeRate)
+        updateItems(currency, true)
+        return result
     }
     // CoreData Remove
     mutating func removeFavorite(_ currency: String) -> Bool {
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        let container = appDelegate.persistentContainer
-        let fetchRequest = FavoriteExchange.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "currency == %@", currency)
-        
-        do {
-            let result = try container.viewContext.fetch(fetchRequest)
-            
-            for data in result as [NSManagedObject] {
-                container.viewContext.delete(data)
-            }
-            updateItems(currency, false)
-            return true
-        } catch {
-            return false
-        }
+        let result = coreDataHandler.removeFavorite(currency)
+        updateItems(currency, false)
+        return result
     }
-    // CoreData Update
+    
+    // 즐겨찾기 항목 업데이트
     mutating func updateItems(_ currency: String,_ isFavorited: Bool) {
         for i in 0..<items.count {
             if items[i].currencyTitle == currency {

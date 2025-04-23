@@ -5,12 +5,21 @@ struct Response: Codable {
     let result: String
     let base: String
     let rates: [String: Double]
+    let updateTime: String
     
     enum CodingKeys: String, CodingKey {
         case result
         case base = "base_code"
         case rates
+        case updateTime = "time_last_update_utc"
     }
+}
+
+struct LastExchangeItem {
+    let currency: String
+    let rate: Double
+    let updateTime: String
+    let change: Double
 }
 
 // Cell Model
@@ -21,6 +30,7 @@ struct ExchangeItem: Hashable {
         return Self.dictionary[currencyTitle] ?? "Unknown"
     }
     var isFavorited: Bool = false
+    var changedRate: Double
     
     static let dictionary: [String: String] = [
         "USD": "미국",
