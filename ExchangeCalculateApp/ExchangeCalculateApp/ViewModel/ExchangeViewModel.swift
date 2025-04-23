@@ -58,4 +58,12 @@ class ExchangeViewModel: ViewModelProtocol {
         result ? state.onNext(.dataUpdated) : state.onNext(.coreDataFetchFailure)
     }
     
+    // 마지막 선택된 환율 이름 저장
+    func fetchLastSelectedCurrency(currency: String?) {
+        guard let currency else { return }
+        var coreDataHandler = CoreDataHandler()
+        let _ = exchageItemDTO.saveCoreData(entity: .lastCurrency,
+                                    currency: currency)
+    }
+    
 }
