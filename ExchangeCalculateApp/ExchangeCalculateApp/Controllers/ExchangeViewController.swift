@@ -24,6 +24,8 @@ final class ExchangeViewController: UIViewController {
             .subscribe(onNext: { [weak self] indexPath in
                 guard let self else { return }
                 self.navigationController?.pushViewController(CalculatorViewController(item: viewModel.exchageItemDTO.items[indexPath.row]), animated: true)
+                let currency = viewModel.exchageItemDTO.items[indexPath.row].currencyTitle
+                self.viewModel.fetchLastSelectedCurrency(currency: currency)
             })
             .disposed(by: disposeBag)
         

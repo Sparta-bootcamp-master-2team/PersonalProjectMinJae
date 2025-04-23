@@ -48,4 +48,9 @@ class CalculatorViewModel: ViewModelProtocol {
         }
         return true
     }
+    
+    func removeLastCurrency() {
+        var handler = CoreDataHandler()
+        handler.removeLastCurrency()
+    }
 }

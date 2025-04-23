@@ -18,6 +18,11 @@ final class CalculatorViewController: UIViewController {
         configureNavigtaioinBar()
         bind()
     }
+    
+    deinit {
+        viewModel.removeLastCurrency()
+    }
+    
     // 생성 시 ExchangeItem 인자로 받도록 구현
     init(item: ExchangeItem) {
         self.viewModel = CalculatorViewModel(item: item)
