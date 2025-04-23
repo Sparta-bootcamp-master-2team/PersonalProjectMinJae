@@ -1,11 +1,3 @@
-//
-//  LastExchange+CoreDataProperties.swift
-//  ExchangeCalculateApp
-//
-//  Created by main on 4/22/25.
-//
-//
-
 import Foundation
 import CoreData
 
