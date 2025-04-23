@@ -5,7 +5,6 @@ import SnapKit
 
 final class CalculatorViewController: UIViewController {
 
-//    private var item: ExchangeItem?
     private let calculatorView = CalculatorView()
     private let disposeBag = DisposeBag()
     private var viewModel: CalculatorViewModel
@@ -18,7 +17,7 @@ final class CalculatorViewController: UIViewController {
         configureNavigtaioinBar()
         bind()
     }
-    
+    // 뒤로 가기를 통해 소멸하면 CoreData에 저장된 통화 문자열 삭제
     deinit {
         viewModel.removeLastCurrency()
     }

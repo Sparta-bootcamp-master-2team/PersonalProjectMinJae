@@ -24,6 +24,7 @@ final class ExchangeViewController: UIViewController {
             .subscribe(onNext: { [weak self] indexPath in
                 guard let self else { return }
                 self.navigationController?.pushViewController(CalculatorViewController(item: viewModel.exchageItemDTO.items[indexPath.row]), animated: true)
+                // 셀 진입 시 해당 셀의 통화 문자열을 CoreData에 저장
                 let currency = viewModel.exchageItemDTO.items[indexPath.row].currencyTitle
                 self.viewModel.fetchLastSelectedCurrency(currency: currency)
             })

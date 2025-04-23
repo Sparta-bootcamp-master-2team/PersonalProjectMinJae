@@ -48,7 +48,7 @@ class CalculatorViewModel: ViewModelProtocol {
         }
         return true
     }
-    
+    // 마지막 환율 정보 삭제
     func removeLastCurrency() {
         var handler = CoreDataHandler()
         handler.removeLastCurrency()

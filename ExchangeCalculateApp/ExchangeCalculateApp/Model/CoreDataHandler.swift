@@ -120,7 +120,7 @@ struct CoreDataHandler {
         }
     }
     
-    
+    // CoreData에 저장된 마지막 통화 문자열 삭제
     func removeLastCurrency() {
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         let container = appDelegate.persistentContainer
