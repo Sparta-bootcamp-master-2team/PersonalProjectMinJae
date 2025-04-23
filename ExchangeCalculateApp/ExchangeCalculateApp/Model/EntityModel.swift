@@ -13,12 +13,16 @@ protocol Entityable {
 enum Entity {
     case favorite
     case lastExchangeItem
+    case lastCurrency
     
     var favorite: some Entityable {
         return FavoriteEntity(key: .setUpFavoriteKeys())
     }
     var lastExchangeItem: some Entityable {
         return LastExchangeEntity(key: .setUpLastExchangeKeys())
+    }
+    var lastCurrency: some Entityable {
+        return LastCurrencyEntity(key: .setUpLastCurrencyKeys())
     }
 }
 
@@ -38,6 +42,13 @@ struct LastExchangeEntity: Entityable {
     var key: Key
 }
 
+struct LastCurrencyEntity: Entityable {
+    typealias ObjectType = LastCurrency
+    var type = LastCurrency.self
+    var name: String = "LastCurrency"
+    var key: Key
+}
+
 // Entity Key
 struct Key {
     var currency: String = ""
@@ -54,5 +65,7 @@ struct Key {
                    updateTime: "updateTime",
                    changeRate: "changeRate")
     }
-    
+    static func setUpLastCurrencyKeys() -> Key {
+        return Key(currency: "currency")
+    }
 }

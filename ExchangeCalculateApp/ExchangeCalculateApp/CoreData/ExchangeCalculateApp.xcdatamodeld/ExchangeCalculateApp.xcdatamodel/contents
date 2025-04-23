@@ -3,6 +3,9 @@
     <entity name="FavoriteExchange" representedClassName="FavoriteExchange" syncable="YES">
         <attribute name="currency" optional="YES" attributeType="String"/>
     </entity>
+    <entity name="LastCurrency" representedClassName="LastCurrency" syncable="YES">
+        <attribute name="currency" optional="YES" attributeType="String"/>
+    </entity>
     <entity name="LastExchange" representedClassName="LastExchange" syncable="YES">
         <attribute name="changeRate" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="currency" optional="YES" attributeType="String"/>

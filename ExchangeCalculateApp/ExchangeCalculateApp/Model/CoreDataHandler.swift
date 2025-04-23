@@ -43,6 +43,21 @@ struct CoreDataHandler {
                     }
                 }
             }
+            
+            if case .lastCurrency = entity {
+                let object = entity.lastCurrency
+                let type = object.type
+                let datas = try container.viewContext.fetch(type.fetchRequest())
+                
+                if let lastCurrency = datas as? [NSManagedObject] {
+                    for item in lastCurrency {
+                        if let currency = item.value(forKey: object.key.currency) as? String {
+                            result.append(currency)
+                        }
+                    }
+                }
+            }
+            
             return result
         } catch {
             return nil
@@ -59,7 +74,8 @@ struct CoreDataHandler {
         let container = appDelegate.persistentContainer
         // 기본으로 즐겨찾기 엔티티로 설정하나, 파라미터의 rate가 nil이 아닌 경우엔 최근 환율정보를 저장하므로 객체 변경
         var object: any Entityable = entity.favorite
-        if rate != nil { object = entity.lastExchangeItem }
+        if case .lastExchangeItem = entity { object = entity.lastExchangeItem }
+        if case .lastCurrency = entity { object = entity.lastCurrency }
         
         guard let entity = NSEntityDescription.entity(forEntityName: object.name,
                                                       in: container.viewContext)
@@ -101,6 +117,24 @@ struct CoreDataHandler {
             return true
         } catch {
             return false
+        }
+    }
+    
+    
+    func removeLastCurrency() {
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        let container = appDelegate.persistentContainer
+        let fetchRequest = LastCurrency.fetchRequest()
+        
+        do {
+            let result = try container.viewContext.fetch(fetchRequest)
+            
+            for data in result as [NSManagedObject] {
+                container.viewContext.delete(data)
+            }
+            print("removeLastCurrency success")
+        } catch {
+            print("removeLastCurrency failed")
         }
     }
     
