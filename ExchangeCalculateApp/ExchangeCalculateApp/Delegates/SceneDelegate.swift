@@ -11,7 +11,21 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
-        window?.rootViewController = UINavigationController(rootViewController: ExchangeViewController())
+        let navigationController = UINavigationController(rootViewController: ExchangeViewController())
+        
+        // 종료 전에 CalculatorVC 였다면, 해당 뷰로 push된 NavigationVC로 표시
+        var coreDataHandler = CoreDataHandler()
+        let lastCurrencyArray = coreDataHandler.fetchCoreData(entity: .lastCurrency) as! [String]
+        if !lastCurrencyArray.isEmpty {
+            let items = coreDataHandler.fetchCoreData(entity: .lastExchangeItem) as! [LastExchangeItem]
+            let lastCurrency = lastCurrencyArray[lastCurrencyArray.count-1]
+            let lastCurrencyItem = items.filter{ $0.currency == lastCurrency}
+            if !lastCurrencyItem.isEmpty {
+                let calculateVC = CalculatorViewController(item: ExchangeItem(currencyTitle: lastCurrency, rate: String(lastCurrencyItem[0].rate), changedRate: 0.0))
+                navigationController.pushViewController(calculateVC, animated: true)
+            }
+        }
+        window?.rootViewController = navigationController
         window?.makeKeyAndVisible()
     }
 
