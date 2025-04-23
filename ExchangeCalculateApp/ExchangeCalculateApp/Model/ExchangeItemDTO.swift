@@ -21,12 +21,16 @@ struct ExchangeItemDTO {
         }
         
         // 이전 데이터 업데이트 필요 여부 파악
-        let updateTime = response.updateTime
-        let lastUpdateTime = lastExchangeItems.first?.updateTime ?? ""
+        let updateTime = response.updateUnixTime
+        let nextUpdateTime = lastExchangeItems.first?.updateTime ?? 0
+        let nowUnixTime = Int(Date().timeIntervalSince1970)
         
-        if updateTime != lastUpdateTime {
-            // 이전 데이터 업데이트 필요
+        print("now: \(nowUnixTime), next: \(nextUpdateTime)")
+        if nowUnixTime >= nextUpdateTime {
+            // 업데이트 필요
+            print("이전 데이터 업데이트 필요!")
             if !lastExchangeItems.isEmpty {
+                print("이전 데이터가 존재, 갱신 필요!")
                 // changeRate 계산 및 갱신
                 for (key, value) in response.rates {
                     let lastRate = lastExchangeItems.filter{ $0.currency == key }.first?.rate ?? 0.0
@@ -34,16 +38,17 @@ struct ExchangeItemDTO {
                     let _ = coreDataHandler.updateLastExchangeItem(entity: .lastExchangeItem,
                                                            currency: key,
                                                            rate: currentRate,
-                                                           updateTime: response.updateTime,
+                                                           updateTime: updateTime,
                                                            changeRate: currentRate - lastRate)
                 }
             } else {
-                // 이전 데이터 주입
+                // 데이터 주입
+                print("이전 데이터가 존재하지않음, 주입 필요!")
                 for (key, value) in response.rates {
                     let _ = coreDataHandler.saveCoreData(entity: .lastExchangeItem,
                                                          currency: key,
                                                          rate: value,
-                                                         updateTime: response.updateTime,
+                                                         updateTime: updateTime,
                                                          changeRate: value)
                 }
             }
@@ -84,7 +89,7 @@ struct ExchangeItemDTO {
     mutating func saveCoreData(entity: Entity,
                                currency: String,
                                rate: Double? = nil,
-                               updateTime: String? = nil,
+                               updateTime: Int? = nil,
                                changeRate: Double? = nil) -> Bool {
         let result = coreDataHandler.saveCoreData(entity: entity,
                                                   currency: currency,

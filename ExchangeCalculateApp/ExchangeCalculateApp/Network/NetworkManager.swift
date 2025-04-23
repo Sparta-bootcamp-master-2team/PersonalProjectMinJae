@@ -11,7 +11,7 @@ enum NetworkError: Error {
 }
 
 enum ServerURL {
-    static let string = "https://open.er-api.com/v6/latest/USD"
+    static let string = "https://open.er-api.com/v6/latest"
 }
 
 final class NetworkManager {
