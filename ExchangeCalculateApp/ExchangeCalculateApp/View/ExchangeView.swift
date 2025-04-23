@@ -22,6 +22,7 @@ class ExchangeView: UIView {
         tableView.register(ExchangeTableViewCell.self, forCellReuseIdentifier: ExchangeTableViewCell.identifier)
         tableView.delegate = self
         tableView.backgroundView = emptyView
+        tableView.backgroundColor = .background
         tableView.separatorStyle = .none
         return tableView
     }()
@@ -40,6 +41,7 @@ class ExchangeView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        self.backgroundColor = .background
         addViews()
         configureLayout()
         configureTableView()

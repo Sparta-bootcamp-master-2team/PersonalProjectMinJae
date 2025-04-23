@@ -13,13 +13,14 @@ final class CalculatorView: UIView {
         stackView.axis = .vertical
         stackView.spacing = 4
         stackView.alignment = .center
+        stackView.backgroundColor = .background
         return stackView
     }()
     
     private let currencyLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 24, weight: .bold)
-        label.textColor = .black
+        label.textColor = .text
         return label
     }()
     
@@ -36,6 +37,7 @@ final class CalculatorView: UIView {
         textField.borderStyle = .roundedRect
         textField.keyboardType = .decimalPad
         textField.textAlignment = .center
+        textField.backgroundColor = .cellBackground
         return textField
     }()
     
@@ -54,13 +56,14 @@ final class CalculatorView: UIView {
         label.font = .systemFont(ofSize: 20, weight: .medium)
         label.textAlignment = .center
         label.numberOfLines = 0
-        label.textColor = .black
+        label.textColor = .text
         label.text = "계산 결과가 여기에 표시됩니다."
         return label
     }()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        self.backgroundColor = .background
         addViews()
         configureLayout()
     }
