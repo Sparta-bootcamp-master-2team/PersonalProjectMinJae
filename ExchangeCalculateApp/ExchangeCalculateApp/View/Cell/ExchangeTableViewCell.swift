@@ -18,13 +18,14 @@ class ExchangeTableViewCell: UITableViewCell {
         stackView.spacing = 4
         stackView.addArrangedSubview(currencyLabel)
         stackView.addArrangedSubview(countryLabel)
+        stackView.backgroundColor = .background
         return stackView
     }()
     
     private lazy var currencyLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 16, weight: .medium)
-        label.textColor = .black
+        label.textColor = .text
         return label
     }()
     
@@ -38,14 +39,14 @@ class ExchangeTableViewCell: UITableViewCell {
     private let rateLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 16, weight: .medium)
-        label.textColor = .black
+        label.textColor = .text
         label.textAlignment = .right
         return label
     }()
     
     private let favoriteButton: UIButton = {
         let button = UIButton()
-        button.tintColor = .systemYellow
+        button.tintColor = .favorite
         return button
     }()
     
@@ -57,6 +58,7 @@ class ExchangeTableViewCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        contentView.backgroundColor = .background
         addViews()
         configureLayout()
     }
