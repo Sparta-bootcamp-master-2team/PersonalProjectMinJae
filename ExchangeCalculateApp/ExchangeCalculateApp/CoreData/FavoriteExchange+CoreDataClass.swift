@@ -2,7 +2,7 @@
 //  FavoriteExchange+CoreDataClass.swift
 //  ExchangeCalculateApp
 //
-//  Created by main on 4/22/25.
+//  Created by main on 4/24/25.
 //
 //
 

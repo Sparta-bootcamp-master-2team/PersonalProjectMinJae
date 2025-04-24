@@ -1,3 +1,11 @@
+//
+//  LastExchange+CoreDataProperties.swift
+//  ExchangeCalculateApp
+//
+//  Created by main on 4/24/25.
+//
+//
+
 import Foundation
 import CoreData
 
@@ -8,10 +16,10 @@ extension LastExchange {
         return NSFetchRequest<LastExchange>(entityName: "LastExchange")
     }
 
+    @NSManaged public var changeRate: Double
     @NSManaged public var currency: String?
     @NSManaged public var rate: Double
-    @NSManaged public var lastUpdateTime: String?
-    @NSManaged public var nextUpdateTime: String?
+    @NSManaged public var updateTime: Int32
 
 }
 

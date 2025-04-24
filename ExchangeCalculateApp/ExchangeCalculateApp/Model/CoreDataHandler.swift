@@ -33,7 +33,7 @@ struct CoreDataHandler {
                     for item in lastExchanges {
                         if let currency = item.value(forKey: object.key.currency) as? String,
                            let rate = item.value(forKey: object.key.rate) as? Double,
-                           let updateTime = item.value(forKey: object.key.updateTime) as? String,
+                           let updateTime = item.value(forKey: object.key.updateTime) as? Int,
                            let changeRate = item.value(forKey: object.key.changeRate) as? Double {
                             result.append(LastExchangeItem(currency: currency,
                                                            rate: rate,
@@ -68,7 +68,7 @@ struct CoreDataHandler {
     mutating func saveCoreData(entity: Entity,
                                currency: String,
                                rate: Double? = nil,
-                               updateTime: String? = nil,
+                               updateTime: Int? = nil,
                                changeRate: Double? = nil) -> Bool {
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         let container = appDelegate.persistentContainer
@@ -77,12 +77,12 @@ struct CoreDataHandler {
         if case .lastExchangeItem = entity { object = entity.lastExchangeItem }
         if case .lastCurrency = entity { object = entity.lastCurrency }
         
-        guard let entity = NSEntityDescription.entity(forEntityName: object.name,
+        guard let setEntity = NSEntityDescription.entity(forEntityName: object.name,
                                                       in: container.viewContext)
         else {
             return false
         }
-        let newItems = NSManagedObject(entity: entity, insertInto: container.viewContext)
+        let newItems = NSManagedObject(entity: setEntity, insertInto: container.viewContext)
         
         newItems.setValue(currency, forKey: object.key.currency)
         if let rate = rate,
@@ -95,6 +95,7 @@ struct CoreDataHandler {
         
         do {
             try container.viewContext.save()
+            let result = self.fetchCoreData(entity: entity)
             return true
         } catch {
             return false
@@ -142,7 +143,7 @@ struct CoreDataHandler {
     mutating func updateLastExchangeItem(entity: Entity,
                                          currency: String,
                                          rate: Double,
-                                         updateTime: String,
+                                         updateTime: Int,
                                          changeRate: Double) -> Bool {
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         let container = appDelegate.persistentContainer
