@@ -15,7 +15,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         // 종료 전에 CalculatorVC 였다면, 해당 뷰로 push된 NavigationVC로 표시
         var coreDataHandler = CoreDataHandler()
-        let lastCurrencyArray = coreDataHandler.fetchCoreData(entity: .lastCurrency) as! [String]
+        guard let lastCurrencyArray = coreDataHandler.fetchCoreData(entity: .lastCurrency) as? [String] else {
+            window?.rootViewController = navigationController
+            window?.makeKeyAndVisible()
+            return
+        }
+        
         if !lastCurrencyArray.isEmpty {
             let items = coreDataHandler.fetchCoreData(entity: .lastExchangeItem) as! [LastExchangeItem]
             let lastCurrency = lastCurrencyArray[lastCurrencyArray.count-1]

@@ -28,7 +28,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // MARK: - Core Data stack
 
     lazy var persistentContainer: NSPersistentContainer = {
-        let container = NSPersistentContainer(name: "ExchangeCalculateAppV2")
+        let container = NSPersistentContainer(name: "ExchangeCalculateApp")
         let description = container.persistentStoreDescriptions.first
         description?.shouldMigrateStoreAutomatically = true
         description?.shouldInferMappingModelAutomatically = false
